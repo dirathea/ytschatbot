@@ -1,0 +1,23 @@
+{
+  "name": "ytschatbot",
+  "version": "0.0.1",
+  "description": "A chatbot for YTS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dirathea/ytschatbot.git"
+  },
+  "keywords": [
+    "chatbot",
+    "yify"
+  ],
+  "author": "Aldira Putra Raharja <dira.thea@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dirathea/ytschatbot/issues"
+  },
+  "homepage": "https://github.com/dirathea/ytschatbot#readme"
+}
