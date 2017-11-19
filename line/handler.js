@@ -64,12 +64,12 @@ class Handler {
     }
   }
 
-  sendMovieList(replyToken, term, result) {
+  sendMovieList(replyToken, result) {
     if (result.movie_count == 0) {
       return this.lineClient
         .replyMessage(
           replyToken,
-          messages.textMessage(`Sorry, ${term} is not found on our database`)
+          messages.textMessage(`Empty result from database`)
         )
         .catch(handleError);
     }
@@ -97,7 +97,7 @@ class Handler {
     });
 
     const message = messages.templateMessage(
-      `Search result for ${term}`,
+      `Search result`,
       messages.carouselTemplate(carouselMessage)
     );
     return this.lineClient.replyMessage(replyToken, message).catch(handleError);
@@ -112,7 +112,7 @@ class Handler {
         this.ytsClient
           .searchMovie(term)
           .then(result => {
-            return this.sendMovieList(replyToken, term, result);
+            return this.sendMovieList(replyToken, result);
           })
           .catch(handleError);
         break;
@@ -186,7 +186,7 @@ class Handler {
 
       case 'suggestion':
         this.ytsClient.getSuggestions(parsedData.data).then(result => {
-          return this.sendMovieList(replyToken, 'suggestion', result);
+          return this.sendMovieList(replyToken, result);
         });
         break;
       default:
