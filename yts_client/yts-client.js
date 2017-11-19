@@ -28,10 +28,16 @@ class YtsClient {
         });
     }
 
-    movieDetails(movie_id, with_images, with_cast) {
-        return this._get('movie_details', {
-            movie_id, with_images, with_cast
-        });
+    movieDetails(params) {
+        const defaultParams = {
+            with_images: true,
+            with_cast: true,
+        }
+        return this._get('movie_details', Object.assign(defaultParams, params));
+    }
+
+    getMovie(movieId) {
+        return this.movieDetails({movie_id: movieId});
     }
 
     listUpcoming() {
