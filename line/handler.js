@@ -64,7 +64,7 @@ class Handler {
     }
   }
 
-  sendMovieList(replyToken, result) {
+  sendMovieList(replyToken, term, result) {
     if (result.movie_count == 0) {
       return this.lineClient
         .replyMessage(
@@ -112,7 +112,7 @@ class Handler {
         this.ytsClient
           .searchMovie(term)
           .then(result => {
-            return this.sendMovieList(replyToken, result);
+            return this.sendMovieList(replyToken, term, result);
           })
           .catch(handleError);
         break;
@@ -186,7 +186,7 @@ class Handler {
 
       case 'suggestion':
         this.ytsClient.getSuggestions(parsedData.data).then(result => {
-          return this.sendMovieList(replyToken, result);
+          return this.sendMovieList(replyToken, 'suggestion', result);
         });
         break;
       default:
