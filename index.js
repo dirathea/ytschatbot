@@ -4,6 +4,7 @@
 const express = require('express');
 const LineClient = require('@line/bot-sdk').Client;
 const middleware = require('@line/bot-sdk').middleware;
+const path = require('path');
 const config = require('./config');
 const YTSClient = require('./yts_client/yts-client');
 const LineHandler = require('./line/handler');
@@ -22,6 +23,8 @@ app.use('/line', middleware(lineConfig), (req, res) => {
   handler.handleRequest(req.body);
   return res.sendStatus(200);
 });
+
+app.use('/', express.static(path.join(__dirname, 'homepage/build')));
 
 app.listen(process.env.PORT || 8080, () => {
   console.log('Bot is up!');
