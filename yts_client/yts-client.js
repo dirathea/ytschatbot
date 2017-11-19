@@ -55,7 +55,7 @@ class YtsClient {
       })
       .then(response => {
         console.log(response);
-        return response.data;
+        return response.data.data;
       })
       .catch(err => {
         console.log(err);
@@ -65,7 +65,7 @@ class YtsClient {
   _post(endpoint, payload) {
     return axios
       .post(`${this.BASE_URL}${endpoint}.json`, payload)
-      .then(response => response.data)
+      .then(response => response.data.data)
       .catch(err => console.log(err));
   }
 }
