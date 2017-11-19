@@ -53,7 +53,10 @@ class YtsClient {
       .get(`${this.BASE_URL}${endpoint}.json`, {
         params: query,
       })
-      .then(response => response.data)
+      .then(response => {
+        console.log(response);
+        return response.data;
+      })
       .catch(err => {
         console.log(err);
       });
