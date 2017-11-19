@@ -145,11 +145,13 @@ class Handler {
                             keyword: 'suggestion',
                             data: movie.id,
                         }));
-                        const buttonMessage = messages.buttonTemplate(undefined, movie.title, mustache.render(MOVIE_MORE_TEXT, {
+                        const buttonTemplate = messages.buttonTemplate(undefined, movie.title, mustache.render(MOVIE_MORE_TEXT, {
                             year: movie.year,
                             genres: (movie.genres || []).join(', '),
                             mpa_rating: movie.mpa_rating
                         }), [watchAction, similarAction]);
+
+                        const buttonMessage = messages.templateMessage(`${movie.title} options`, buttonTemplate);
 
                         this.lineClient.replyMessage(replyToken, [movieImageMessage, movieDetailTextMessage, buttonMessage])
                         .catch(handleError);
