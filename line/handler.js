@@ -77,7 +77,9 @@ class Handler {
                             type: 'template',
                             altText: `Search result for ${term}`,
                             template: carrouselMessage
-                        });
+                        }).catch(err => {
+                            console.log(err);
+                        })
                     })
                     .catch(err => {
                         console.log(err);
