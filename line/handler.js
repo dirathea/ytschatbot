@@ -110,8 +110,6 @@ class Handler {
               `Search result for ${term}`,
               messages.carouselTemplate(carouselMessage)
             );
-
-            console.log(JSON.stringify(message));
             return this.lineClient
               .replyMessage(replyToken, message)
               .catch(handleError);

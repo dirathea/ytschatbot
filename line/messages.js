@@ -40,9 +40,9 @@ exports.buttonTemplate = (thumbnailImageUrl, title, text, actions) => ({
     actions
 });
 
-exports.carouselTemplate = (column) => ({
+exports.carouselTemplate = (columns) => ({
     type: CAROUSEL_TEMPLATE_TYPE,
-    column
+    columns
 });
 
 exports.carouselColumnTemplate = (thumbnailImageUrl, title, text, actions) => ({
