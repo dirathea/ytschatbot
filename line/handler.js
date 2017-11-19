@@ -151,7 +151,8 @@ class Handler {
                             mpa_rating: movie.mpa_rating
                         }), [watchAction, similarAction]);
 
-                        this.lineClient.replyMessage(replyToken, [movieImageMessage, movieDetailTextMessage, buttonMessage]);
+                        this.lineClient.replyMessage(replyToken, [movieImageMessage, movieDetailTextMessage, buttonMessage])
+                        .catch(handleError);
                     })
                     .catch(handleError)
                 break;

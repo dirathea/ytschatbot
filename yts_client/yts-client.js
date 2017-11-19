@@ -52,7 +52,6 @@ class YtsClient {
                 .query(query)
                 .end((response) => {
                     const responseData = response.body;
-                    console.log(responseData);
                     if (responseData.status === ERROR) {
                         return reject(responseData.status_message);
                     }
