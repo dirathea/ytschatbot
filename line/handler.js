@@ -152,7 +152,6 @@ class Handler {
                         }), [watchAction, similarAction]);
 
                         const buttonMessage = messages.templateMessage(`${movie.title} options`, buttonTemplate);
-                        console.log(JSON.stringify(buttonMessage));
                         this.lineClient.replyMessage(replyToken, [movieImageMessage, movieDetailTextMessage, buttonMessage])
                         .catch(handleError);
                     })

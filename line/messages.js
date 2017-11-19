@@ -7,7 +7,7 @@ const LOCATION_TYPE = 'location';
 const IMAGEMAP_TYPE = 'imagemap';
 const TEMPLATE_TYPE = 'template';
 
-const BUTTON_TEMPLATE_TYPE = 'button';
+const BUTTON_TEMPLATE_TYPE = 'buttons';
 const CAROUSEL_TEMPLATE_TYPE = 'carousel';
 
 const ACTION_POSTBACK_TYPE = 'postback';
