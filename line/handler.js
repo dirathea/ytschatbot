@@ -1,6 +1,10 @@
 const _ = require('lodash');
 const qa = require('query-string')
 
+const handleError = (err) => {
+    console.error(JSON.stringify(err.originalError.response.data));
+}
+
 class Handler {
     constructor(lineClient, ytsClient) {
         this.lineClient = lineClient;
@@ -39,10 +43,6 @@ class Handler {
         }
     }
 
-    handleError = (err) => {
-        console.error(JSON.stringify(err.originalError.response.data));
-    }
-
     handleTextMessage(replyToken, source, text) {
         const token = text.split(' ');
         const keyword = token[0].toLowerCase();
@@ -56,7 +56,7 @@ class Handler {
                                 type: 'text',
                                 text: `Sorry, Search term ${term} is not found on our database`,
                             })
-                            .catch(this.handleError)
+                            .catch(handleError)
                         };
 
                         const carrouselMessage = result.movies.map(movie => {
@@ -98,7 +98,7 @@ class Handler {
                             
                         })
                     })
-                    .catch(this.handleError);
+                    .catch(handleError);
                 break;
             default:
                 console.log(`unknown keyword ${keyword}`);
