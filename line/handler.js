@@ -64,6 +64,45 @@ class Handler {
     }
   }
 
+  sendMovieList(replyToken, result) {
+    if (result.movie_count == 0) {
+      return this.lineClient
+        .replyMessage(
+          replyToken,
+          messages.textMessage(`Sorry, ${term} is not found on our database`)
+        )
+        .catch(handleError);
+    }
+
+    const carouselMessage = result.movies.map(movie => {
+      const actions = [
+        messages.actionUriTemplate(
+          'Watch Trailer',
+          `https://www.youtube.com/watch?v=${movie.yt_trailer_code}`
+        ),
+        messages.actionPostbackTemplate(
+          'Details',
+          qs.stringify({
+            keyword: 'movie-detail',
+            data: movie.id,
+          })
+        ),
+      ];
+      return messages.carouselColumnTemplate(
+        movie.large_cover_image,
+        movie.title,
+        _.truncate(movie.summary, { length: 50, separator: /\W/ }),
+        actions
+      );
+    });
+
+    const message = messages.templateMessage(
+      `Search result for ${term}`,
+      messages.carouselTemplate(carouselMessage)
+    );
+    return this.lineClient.replyMessage(replyToken, message).catch(handleError);
+  }
+
   handleTextMessage(replyToken, source, text) {
     const token = text.split(' ');
     const keyword = token[0].toLowerCase();
@@ -73,46 +112,7 @@ class Handler {
         this.ytsClient
           .searchMovie(term)
           .then(result => {
-            if (result.movie_count == 0) {
-              return this.lineClient
-                .replyMessage(
-                  replyToken,
-                  messages.textMessage(
-                    `Sorry, ${term} is not found on our database`
-                  )
-                )
-                .catch(handleError);
-            }
-
-            const carouselMessage = result.movies.map(movie => {
-              const actions = [
-                messages.actionUriTemplate(
-                  'Watch Trailer',
-                  `https://www.youtube.com/watch?v=${movie.yt_trailer_code}`
-                ),
-                messages.actionPostbackTemplate(
-                  'Details',
-                  qs.stringify({
-                    keyword: 'movie-detail',
-                    data: movie.id,
-                  })
-                ),
-              ];
-              return messages.carouselColumnTemplate(
-                movie.large_cover_image,
-                movie.title,
-                _.truncate(movie.summary, {length: 50, separator: /\W/}),
-                actions
-              );
-            });
-
-            const message = messages.templateMessage(
-              `Search result for ${term}`,
-              messages.carouselTemplate(carouselMessage)
-            );
-            return this.lineClient
-              .replyMessage(replyToken, message)
-              .catch(handleError);
+            return this.sendMovieList(replyToken, result);
           })
           .catch(handleError);
         break;
@@ -185,6 +185,9 @@ class Handler {
         break;
 
       case 'suggestion':
+        this.ytsClient.getSuggestions(parsedData.data).then(result => {
+          return this.sendMovieList(replyToken, result);
+        });
         break;
       default:
         break;

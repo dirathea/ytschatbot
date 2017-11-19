@@ -46,6 +46,12 @@ class YtsClient {
     return this._get('list_upcoming');
   }
 
+  getSuggestions(movieId) {
+    return this._get('movie_suggestions', {
+      movie_id: movieId
+    });
+  }
+
   _get(endpoint, query) {
     console.log(`requesting to ${endpoint}`);
     console.log(query);
