@@ -39,6 +39,10 @@ class Handler {
         }
     }
 
+    handleError = (err) => {
+        console.error(JSON.stringify(err.originalError.response.data));
+    }
+
     handleTextMessage(replyToken, source, text) {
         const token = text.split(' ');
         const keyword = token[0].toLowerCase();
@@ -47,6 +51,14 @@ class Handler {
             case 'search':
                 this.ytsClient.searchMovie(term)
                     .then(result => {
+                        if (result.movie_count == 0) {
+                            return this.lineClient.replyMessage(replyToken, {
+                                type: 'text',
+                                text: `Sorry, Search term ${term} is not found on our database`,
+                            })
+                            .catch(this.handleError)
+                        };
+
                         const carrouselMessage = result.movies.map(movie => {
                             const actions = [
                                 {
@@ -82,13 +94,11 @@ class Handler {
                             }
                         };
 
-                        this.lineClient.replyMessage(replyToken, message).catch(err => {
-                            console.log(JSON.stringify(err.originalError.response.data));
+                        return this.lineClient.replyMessage(replyToken, message).catch(err => {
+                            
                         })
                     })
-                    .catch(err => {
-                        console.log(err);
-                    });
+                    .catch(this.handleError);
                 break;
             default:
                 console.log(`unknown keyword ${keyword}`);
