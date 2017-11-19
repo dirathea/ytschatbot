@@ -11,9 +11,16 @@ const ERROR = 'error';
 
 class YtsClient {
 
-    listMovie(limit, page, quality, minimum_rating, query_term, genre, sort_by, order_by, with_rt_ratings) {
-        return this._get('list_movies', {
-            limit, page, quality, minimum_rating, query_term, genre, sort_by, order_by, with_rt_ratings
+    listMovie(searchParams) {
+        const defaultSearchTerms = {
+            limit: 10,
+        }
+        return this._get('list_movies', Object.assign(defaultSearchTerms, searchParams));
+    }
+
+    searchMovie(term) {
+        return this.listMovie({
+            query_term: term
         });
     }
 
