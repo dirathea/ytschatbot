@@ -130,9 +130,9 @@ class Handler {
 
     handlePostback(replyToken, source, data) {
         const parsedData = qs.parse(data);
-        console.log(parsedData);
         switch (parsedData.keyword) {
             case 'movie-detail':
+                console.log(parsedData.data);
                 this.ytsClient.getMovie(parsedData.data.movieId)
                     .then(result => {
                         const movie = result.movie;
