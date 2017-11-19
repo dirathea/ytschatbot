@@ -1,3 +1,6 @@
+const _ = require('lodash');
+const qa = require('query-string')
+
 class Handler {
     constructor(lineClient, ytsClient) {
         this.lineClient = lineClient;
@@ -44,7 +47,37 @@ class Handler {
             case 'search':
                 this.ytsClient.searchMovie(term)
                     .then(result => {
-                        console.log(result);
+                        const carrouselMessage = result.movies.map(movie => {
+                            const actions = [
+                                {
+                                    type: 'uri',
+                                    label: 'trailer',
+                                    uri: `https://www.youtube.com/watch?v=${movie.yt_trailer_code}`
+                                },
+                                {
+                                    type: 'postback',
+                                    label: 'Details',
+                                    data: qa.stringify({
+                                        keyword: 'movie-detail',
+                                        data: {
+                                            id: movie.id
+                                        }
+                                    })
+                                }
+                            ]
+                            return {
+                                thumbnailImageUrl: movie.large_cover_image,
+                                title: movie.title,
+                                text: _.truncate(movie.summary, {length: 50, separator: /\W/}),
+                                actions,
+                            }
+                        });
+
+                        this.lineClient.replyMessage(replyToken, {
+                            type: 'template',
+                            altText: `Search result for ${term}`,
+                            template: carrouselMessage
+                        });
                     })
                     .catch(err => {
                         console.log(err);
