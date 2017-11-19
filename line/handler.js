@@ -5,7 +5,6 @@ class Handler {
     }
 
     handleRequest(payload) {
-        console.log(payload);
         payload.events.forEach(event => {
             this.handleEvent(event);
         });
@@ -15,10 +14,7 @@ class Handler {
         const type = event.type;
         switch (type) {
             case 'message':
-                this.lineClient.replyMessage(event.replyToken, {
-                    type: 'text',
-                    text: `Hello.. I'm YTS Bot, will help you search for movies from YIFY collections...`
-                });
+                this.handleMessageEvent(event);
                 break;
         
             default:
