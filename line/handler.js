@@ -73,11 +73,15 @@ class Handler {
                             }
                         });
 
-                        this.lineClient.replyMessage(replyToken, {
+                        const message = {
                             type: 'template',
                             altText: `Search result for ${term}`,
                             template: carrouselMessage
-                        }).catch(err => {
+                        };
+
+                        console.log(JSON.stringify(message));
+
+                        this.lineClient.replyMessage(replyToken, message).catch(err => {
                             console.log(JSON.stringify(err.originalError.response.data));
                         })
                     })
