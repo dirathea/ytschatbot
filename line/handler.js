@@ -88,9 +88,7 @@ class Handler {
                                     label: 'Details',
                                     data: qs.stringify({
                                         keyword: 'movie-detail',
-                                        data: {
-                                            movieId: movie.id
-                                        }
+                                        movieId: movie.id
                                     })
                                 }
                             ]
@@ -132,8 +130,7 @@ class Handler {
         const parsedData = qs.parse(data);
         switch (parsedData.keyword) {
             case 'movie-detail':
-                console.log(parsedData.data);
-                this.ytsClient.getMovie(parsedData.data.movieId)
+                this.ytsClient.getMovie(parsedData.data)
                     .then(result => {
                         const movie = result.movie;
                         const movieImageMessage = messages.imageMessage(movie.large_cover_image, movie.small_cover_image);
@@ -146,9 +143,7 @@ class Handler {
                         const watchAction = messages.actionUriTemplate("Watch Now", movie.url);
                         const similarAction = messages.actionPostbackTemplate("Simillar", qs.stringify({
                             keyword: 'suggestion',
-                            data: {
-                                movieId: movie.id,
-                            },
+                            movieId: movie.id,
                         }));
                         const buttonMessage = messages.buttonTemplate(undefined, movie.title, mustache.render(MOVIE_MORE_TEXT, {
                             year: movie.year,
