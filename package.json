@@ -4,8 +4,9 @@
   "description": "A chatbot for YTS",
   "main": "index.js",
   "scripts": {
-    "start": "cd homepage && npm run build && cd .. && node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "cd homepage && npm install && npm run build"
   },
   "repository": {
     "type": "git",
