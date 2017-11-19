@@ -110,10 +110,9 @@ class Handler {
               `Search result for ${term}`,
               messages.carouselTemplate(carouselMessage)
             );
-
             return this.lineClient
               .replyMessage(replyToken, message)
-              .catch(err => {});
+              .catch(handleError);
           })
           .catch(handleError);
         break;
