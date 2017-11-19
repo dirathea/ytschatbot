@@ -50,6 +50,7 @@ class YtsClient {
                 .query(query)
                 .end((response) => {
                     const responseData = response.body;
+                    console.log(responseData);
                     if (responseData.status === ERROR) {
                         return reject(responseData.status_message);
                     }
@@ -64,10 +65,11 @@ class YtsClient {
                 .send(payload)
                 .end((response) => {
                     const responseData = response.body;
+                    console.log(responseData);
                     if (responseData.status === ERROR) {
                         return reject(responseData.status_message);
                     }
-                    resolve(responseData.data);
+                    return resolve(responseData.data);
                 })
         });
     }
