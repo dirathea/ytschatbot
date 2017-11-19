@@ -2,15 +2,27 @@
  * Created by aldiraraharja on 1/15/17.
  */
 const express = require('express');
-const bodyParser = require('body-parser');
-const lineApp = require('./line/router');
+const LineClient = require('@line/bot-sdk').Client;
+const middleware = require('@line/bot-sdk').middleware;
+const config = require('./config');
+const YTSClient = require('./yts_client/yts-client');
+const LineHandler = require('./line/handler');
 
 const app = express();
+const lineConfig = {
+  channelAccessToken: config.LINE_CHANNEL_ACCESS_TOKEN,
+  channelSecret: config.LINE_CHANNEL_SECRET,
+};
 
-app.use(bodyParser.json());
+const client = new LineClient(lineConfig);
+const ystClient = new YTSClient();
+const handler = new LineHandler(client, ystClient);
 
-app.use('/line', lineApp);
+app.use('/line', middleware(lineConfig), (req, res) => {
+  handler.handleRequest(req.body);
+  return res.sendStatus(200);
+});
 
 app.listen(process.env.PORT || 8080, () => {
-    console.log('Bot is up!');
+  console.log('Bot is up!');
 });
