@@ -15,7 +15,7 @@ const lineConfig = {
 };
 
 const client = new LineClient(lineConfig);
-const ystClient = new YTSClient();
+const ystClient = new YTSClient(config.YTS_BASE_URL);
 const handler = new LineHandler(client, ystClient);
 
 app.use('/line', middleware(lineConfig), (req, res) => {

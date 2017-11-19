@@ -11,6 +11,10 @@ const ERROR = 'error';
 
 class YtsClient {
 
+    constructor(BASE_URL) {
+        this.BASE_URL = BASE_URL
+    }
+
     listMovie(searchParams) {
         const defaultSearchTerms = {
             limit: 10,
@@ -36,7 +40,7 @@ class YtsClient {
 
     _get(endpoint, query) {
         return new Promise((resolve, reject) => {
-            unirest.get(`${BASE_URL}${endpoint}.json`)
+            unirest.get(`${this.BASE_URL}${endpoint}.json`)
                 .query(query)
                 .end((response) => {
                     const responseData = response.body;
@@ -50,7 +54,7 @@ class YtsClient {
 
     _post(endpoint, payload) {
         return new Promise((resolve, reject) => {
-            unirest.post(`${BASE_URL}${endpoint}.json`)
+            unirest.post(`${this.BASE_URL}${endpoint}.json`)
                 .send(payload)
                 .end((response) => {
                     const responseData = response.body;
