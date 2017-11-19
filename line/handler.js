@@ -88,7 +88,7 @@ class Handler {
                                     label: 'Details',
                                     data: qs.stringify({
                                         keyword: 'movie-detail',
-                                        movieId: movie.id
+                                        data: movie.id
                                     })
                                 }
                             ]
@@ -143,7 +143,7 @@ class Handler {
                         const watchAction = messages.actionUriTemplate("Watch Now", movie.url);
                         const similarAction = messages.actionPostbackTemplate("Simillar", qs.stringify({
                             keyword: 'suggestion',
-                            movieId: movie.id,
+                            data: movie.id,
                         }));
                         const buttonMessage = messages.buttonTemplate(undefined, movie.title, mustache.render(MOVIE_MORE_TEXT, {
                             year: movie.year,
