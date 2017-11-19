@@ -45,6 +45,8 @@ class YtsClient {
     }
 
     _get(endpoint, query) {
+        console.log(`requesting to ${endpoint}`);
+        console.log(query);
         return new Promise((resolve, reject) => {
             unirest.get(`${this.BASE_URL}${endpoint}.json`)
                 .query(query)
