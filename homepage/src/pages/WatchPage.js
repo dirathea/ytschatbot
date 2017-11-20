@@ -2,20 +2,32 @@ import React, { Component } from 'react';
 import WebTorrent from 'webtorrent';
 
 class WatchPage extends Component {
-    constructor(props) {
-        super(props);
-        this.client = new WebTorrent();
-        const hash = props.match.params.hash;
-        console.log(`load torrent ${hash}`)
-        this.client.add(hash, torrent => {
-            console.log('torrent');
-          torrent.files.forEach(function(file) {
-            // Display the file by appending it to the DOM. Supports video, audio, images, and
-            // more. Specify a container element (CSS selector or reference to DOM node).
-            file.appendTo('#torrent');
-          });
+  state = {
+    hash : 'magnet:?xt=urn:btih:6A88FB0181448B86465D12737931DF825F60A2A0&dn=Cars+3+%282017%29+%5B720p%5D+%5BYTS.AG%5D&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fp4p.arenabg.ch%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337'
+  }
+
+  constructor(props) {
+    super(props);
+    this.client = new WebTorrent();
+  }
+
+  componentDidMount() {
+    this.client.add(this.state.hash,
+      torrent => {
+        console.log('torrent');
+        // Torrents can contain many files. Let's use the .mp4 file
+        var file = torrent.files.find(function(file) {
+          return file.name.endsWith('.mp4');
         });
-    }
+        file.appendTo('#torrent');
+      }
+    );
+
+    this.client.on('error', err => {
+        this.setState({err});
+    });
+  }
+
   render() {
     return (
       <div>
