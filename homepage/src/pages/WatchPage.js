@@ -11,7 +11,13 @@ class WatchPage extends Component {
   }
 
   componentDidMount() {
-    this.client.add(this.state.hash,
+    this.client.on('error', err => {
+        this.setState({err});
+    });
+  }
+
+  render() {
+    this.client.add(`magnet:?${this.props.match.params.hash}`,
       torrent => {
         console.log('torrent');
         // Torrents can contain many files. Let's use the .mp4 file
@@ -21,13 +27,6 @@ class WatchPage extends Component {
         file.appendTo('#torrent');
       }
     );
-
-    this.client.on('error', err => {
-        this.setState({err});
-    });
-  }
-
-  render() {
     return (
       <div>
         Grab your popcorn and watch {this.props.match.params.hash}
