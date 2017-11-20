@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import WebTorrent from 'webtorrent';
 
 class WatchPage extends Component {
   state = {
@@ -8,7 +7,7 @@ class WatchPage extends Component {
 
   constructor(props) {
     super(props);
-    this.client = new WebTorrent();
+    this.client = new window.WebTorrent();
   }
 
   componentDidMount() {
