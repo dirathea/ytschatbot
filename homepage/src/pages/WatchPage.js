@@ -35,9 +35,6 @@ class WatchPage extends Component {
     this.client.on('error', err => {
         this.setState({err});
     });
-  }
-
-  render() {
     this.client.add(this.state.hash, torrentOpts,
       torrent => {
         console.log('torrent');
@@ -48,6 +45,9 @@ class WatchPage extends Component {
         file.appendTo('#torrent');
       }
     );
+  }
+
+  render() {
     return (
       <div>
         Grab your popcorn and watch {this.props.match.params.hash}
