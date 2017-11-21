@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 class WatchPage extends Component {
   state = {
-    hash : 'magnet:?xt=urn:btih:72A28A50B4AD7C969B1BCE259EC7284FE293A4B3&dn=Geostorm.2017.720p.KORSUB.HDRip.x264.AAC2.0-STUTTERSHIT%5Brarbg%5D&tr=udp%3A%2F%2F9.rarbg.me%3A2710%2Fannounce;tr=udp%3A%2F%2F9.rarbg.to%3A2710%2Fannounce;tr=http%3A%2F%2Ftracker.trackerfix.com%3A80%2Fannounce'
+    hash : 'magnet:?xt=urn:btih:6832C73CEE9E4F5F430ACE96CE2442A213EB11B1&dn=Cars+3+%282017%29+%5B1080p%5D+%5BYTS.AG%5D&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fp4p.arenabg.ch%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com'
   }
 
   constructor(props) {
