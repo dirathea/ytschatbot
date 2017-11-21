@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-
+import * as firebase from "firebase";
 const trackers = ['wss://tracker.btorrent.xyz', 'wss://tracker.openwebtorrent.com', 'wss://tracker.fastcast.nz']
 
 const rtcConfig = {
@@ -29,28 +29,30 @@ class WatchPage extends Component {
     this.client = new window.WebTorrent({
       tracker: trackerOpts
     });
+    this.db = firebase.firestore();
   }
 
   componentDidMount() {
     this.client.on('error', err => {
         this.setState({err});
     });
-    this.client.add(this.state.hash, torrentOpts,
-      torrent => {
-        console.log('torrent');
-        // Torrents can contain many files. Let's use the .mp4 file
-        var file = torrent.files.find(function(file) {
-          return file.name.endsWith('.mp4');
-        });
-        file.appendTo('#torrent');
-      }
-    );
+    this.db.doc(`session/${this.props.match.params.hash}`).get().then(snapshot => {
+      this.client.add(snapshot.data().magnetUrl, torrentOpts,
+        torrent => {
+          console.log('torrent');
+          // Torrents can contain many files. Let's use the .mp4 file
+          var file = torrent.files.find(function(file) {
+            return file.name.endsWith('.mp4');
+          });
+          file.appendTo('#torrent');
+        }
+      );
+    });
   }
 
   render() {
     return (
       <div>
-        Grab your popcorn and watch {this.props.match.params.hash}
         <div id="torrent" />
       </div>
     );

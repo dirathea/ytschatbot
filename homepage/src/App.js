@@ -1,8 +1,17 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import * as firebase from "firebase";
+// Required for side-effects
+import "firebase/firestore";
 import logo from './logo.svg';
 import './App.css';
 import WatchPage from "./pages/WatchPage";
+
+firebase.initializeApp({
+  apiKey: 'AIzaSyCrpY3NGrNXzLfBUbjBYnfnNPEp5j_Q8Ng',
+  authDomain: 'ytsbotindo.firebaseapp.com',
+  projectId: 'ytsbotindo'
+});
 
 class App extends Component {
   render() {
