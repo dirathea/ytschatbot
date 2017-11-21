@@ -1,13 +1,34 @@
 import React, { Component } from 'react';
 
+const trackers = ['wss://tracker.btorrent.xyz', 'wss://tracker.openwebtorrent.com', 'wss://tracker.fastcast.nz']
+
+const rtcConfig = {
+  'iceServers': [
+    {
+      'urls': 'stun:stun.l.google.com:19305'
+    }
+  ]
+}
+
+const torrentOpts = {
+  announce: trackers
+}
+
+const trackerOpts = {
+  announce: trackers,
+  rtcConfig: rtcConfig
+}
+
 class WatchPage extends Component {
   state = {
-    hash : 'magnet:?xt=urn:btih:6832C73CEE9E4F5F430ACE96CE2442A213EB11B1&dn=Cars+3+%282017%29+%5B1080p%5D+%5BYTS.AG%5D&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fp4p.arenabg.ch%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com'
+    hash : 'magnet:?xt=urn:btih:79C0CB48CD77946FC20AEA3B9F80DE605FD7A06C&dn=The+Hitman%27s+Bodyguard+%282017%29+%5B720p%5D+%5BYTS.AG%5D&tr=udp%3A%2F%2Fglotorrents.pw%3A6969%2Fannounce&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fp4p.arenabg.ch%3A1337&tr=udp%3A%2F%2Ftracker.internetwarriors.net%3A1337'
   }
 
   constructor(props) {
     super(props);
-    this.client = new window.WebTorrent();
+    this.client = new window.WebTorrent({
+      tracker: trackerOpts
+    });
   }
 
   componentDidMount() {
@@ -17,7 +38,7 @@ class WatchPage extends Component {
   }
 
   render() {
-    this.client.add(this.state.hash,
+    this.client.add(this.state.hash, torrentOpts,
       torrent => {
         console.log('torrent');
         // Torrents can contain many files. Let's use the .mp4 file
