@@ -2,7 +2,6 @@
  * Created by aldiraraharja on 1/15/17.
  */
 'use strict';
-const qs = require('querystring');
 const Promise = require('bluebird');
 const axios = require('axios');
 
@@ -84,7 +83,7 @@ class YtsClient {
   }
 
   generateMagnetUrl(hash, movieName) {
-    const encodedMovieName = qs.escape(movieName);
+    const encodedMovieName = encodeURIComponent(movieName);
     return `magnet:?xt=urn:btih:${hash}&dn=${encodedMovieName}`
   }
 }
