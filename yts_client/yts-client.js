@@ -85,7 +85,7 @@ class YtsClient {
 
   generateMagnetUrl(hash, movieName) {
     const encodedMovieName = encodeURIComponent(movieName);
-    return `magnet:?xt=urn:btih:${hash}&dn=${encodedMovieName}&tr=${TRACKER.join('&tr=')}`
+    return `magnet:?xt=urn:btih:${hash}&dn=${encodedMovieName}`
   }
 }
 
