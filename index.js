@@ -24,7 +24,7 @@ app.use('/line', middleware(lineConfig), (req, res) => {
   return res.sendStatus(200);
 });
 
-app.use('/', express.static(path.join(__dirname, 'homepage/build')));
+app.use('*', express.static(path.join(__dirname, 'homepage/build')));
 
 app.listen(process.env.PORT || 8080, () => {
   console.log('Bot is up!');
