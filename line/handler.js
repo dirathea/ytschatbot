@@ -177,6 +177,8 @@ class Handler {
               `${movie.title} options`,
               buttonTemplate
             );
+
+            console.log(JSON.stringify(buttonMessage));
             this.lineClient
               .replyMessage(replyToken, [
                 movieImageMessage,
