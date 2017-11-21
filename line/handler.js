@@ -19,9 +19,10 @@ const MOVIE_MORE_TEXT = `{{year}}
 {{mpa_rating}}`;
 
 class Handler {
-  constructor(lineClient, ytsClient) {
+  constructor(lineClient, ytsClient, firebaseClient) {
     this.lineClient = lineClient;
     this.ytsClient = ytsClient;
+    this.firebaseClient = firebaseClient;
   }
 
   handleRequest(payload) {
@@ -147,9 +148,12 @@ class Handler {
                 description_full: movie.description_full,
               })
             );
-            const watchAction = messages.actionUriTemplate(
+            const watchAction = messages.actionPostbackTemplate(
               'Watch Now',
-              movie.url
+              qs.stringify({
+                keyword: 'watchlink',
+                movie: this.ytsClient.generateMagnetUrl(movie.torrents[0].hash, movie.title_long)
+              })
             );
             const similarAction = messages.actionPostbackTemplate(
               'Simillar',
@@ -188,6 +192,13 @@ class Handler {
         this.ytsClient.getSuggestions(parsedData.data).then(result => {
           return this.sendMovieList(replyToken, result);
         });
+        break;
+      
+        case 'watchlink':
+        this.firebaseClient.addWatchSession(source.userId, parsedData.movie)
+          .then(url => {
+            this.lineClient.replyMessage(replyToken, messages.textMessage(url));
+          });
         break;
       default:
         break;

@@ -8,6 +8,7 @@ const path = require('path');
 const config = require('./config');
 const YTSClient = require('./yts_client/yts-client');
 const LineHandler = require('./line/handler');
+const FirebaseClient = require('./firebase_client');
 
 const app = express();
 const lineConfig = {
@@ -17,7 +18,8 @@ const lineConfig = {
 
 const client = new LineClient(lineConfig);
 const ystClient = new YTSClient(config.YTS_BASE_URL);
-const handler = new LineHandler(client, ystClient);
+const firebaseClient = new FirebaseClient()
+const handler = new LineHandler(client, ystClient, firebaseClient);
 
 app.use('/line', middleware(lineConfig), (req, res) => {
   handler.handleRequest(req.body);
