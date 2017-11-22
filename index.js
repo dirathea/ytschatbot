@@ -29,7 +29,7 @@ app.use('/line', middleware(lineConfig), (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'homepage', 'build', 'index.html'));
+  return res.sendFile(path.resolve(__dirname, 'homepage', 'build', 'index.html'));
 })
 
 app.listen(process.env.PORT || 8080, () => {
