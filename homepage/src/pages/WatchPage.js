@@ -49,7 +49,7 @@ class WatchPage extends Component {
         this.setState({err});
     });
     this.db.doc(`session/${this.props.match.params.hash}`).get().then(snapshot => {
-      this.client.add(snapshot.data().magnetUrl, torrentOpts,
+      this.client.add(snapshot.data().torrentUrl, torrentOpts,
         torrent => {
           console.log('torrent');
           // Torrents can contain many files. Let's use the .mp4 file

@@ -13,11 +13,11 @@ admin.initializeApp({
 const firestore = admin.firestore();
 
 class FirebaseClient {
-    addWatchSession(userId, magnetUrl) {
+    addWatchSession(userId, torrentUrl) {
         const watchReference = firestore.collection('session');
         return watchReference.add({
             userId,
-            magnetUrl
+            torrentUrl
         }).then(result => {
             return `${config.BASE_URL}/watch/${result.id}`;
         });
