@@ -21,12 +21,13 @@ const ystClient = new YTSClient(config.YTS_BASE_URL);
 const firebaseClient = new FirebaseClient()
 const handler = new LineHandler(client, ystClient, firebaseClient);
 
+app.use(express.static(path.resolve(__dirname, 'homepage', 'build')));
+
 app.use('/line', middleware(lineConfig), (req, res) => {
   handler.handleRequest(req.body);
   return res.sendStatus(200);
 });
 
-app.use(express.static(path.join(__dirname, 'homepage/build')));
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, 'homepage', 'build', 'index.html'));
 })
