@@ -152,7 +152,7 @@ class Handler {
               'Watch Now',
               qs.stringify({
                 keyword: 'watchlink',
-                movie: this.ytsClient.generateMagnetUrl(movie.torrents[0].hash, movie.title_long)
+                movie: movie.torrents[0].url
               })
             );
             const similarAction = messages.actionPostbackTemplate(
