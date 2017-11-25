@@ -9,7 +9,7 @@ const config = require('./config');
 const YTSClient = require('./yts_client/yts-client');
 const LineHandler = require('./line/handler');
 const FirebaseClient = require('./firebase_client');
-const Torrent = require('./torrent');
+const Torrent = require('./torrent/Torrent');
 
 const torrentClient = new Torrent();
 
