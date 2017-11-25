@@ -31,6 +31,10 @@ class Torrent {
                   }
                 });
             });
+        
+        webtorrent.on('error', err => {
+          console.log(err);
+        });
     }
     addNewTorrent(sessionId, torrentFile) {
         webtorrent.add(torrentFile, (torrent) => {

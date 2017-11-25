@@ -9,7 +9,7 @@ class WatchPage extends Component {
   render() {
     return (
       <div>
-        <video src={`/data/${this.props.match.params.id}`} />
+        <video src={`/data/${this.props.match.params.id}`} controls/>
       </div>
     );
   }
