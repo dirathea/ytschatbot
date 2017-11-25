@@ -8,6 +8,8 @@
     "react-dom": "^16.1.1",
     "react-router-dom": "^4.2.2",
     "react-scripts": "1.0.17",
+    "redux": "^3.7.2",
+    "video-react": "^0.8.10",
     "webtorrent": "^0.98.20"
   },
   "scripts": {
