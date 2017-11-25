@@ -28,7 +28,7 @@ class Torrent {
             .onSnapshot(snapshot => {
                 snapshot.docChanges.forEach(change => {
                   const torrentUrl = change.doc.data().torrentUrl;
-                  if (change.type === 'added' && !listTorrent[torrentUrl]) {
+                  if (change.type === 'added') {
                     this.addNewTorrent(change.doc.id, torrentUrl);
                   }
                 });
