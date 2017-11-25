@@ -12,8 +12,7 @@ class WatchPage extends Component {
           }}
           src={`/data/${this.props.match.params.id}`}
           autoPlay
-          fluid
-          playsInline>
+          fluid>
           <ControlBar autoHide={true} />
           <BigPlayButton position="center" style={{display: 'none'}}/>
         </Player>
