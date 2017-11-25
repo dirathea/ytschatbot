@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ControlBar, Player } from "video-react";
+import { ControlBar, Player } from 'video-react';
 
 class WatchPage extends Component {
   render() {
@@ -8,13 +8,14 @@ class WatchPage extends Component {
         <Player
           style={{
             width: '100vw',
-            height: '100vh'
+            height: '100vh',
           }}
           src={`/data/${this.props.match.params.id}`}
+          autoPlay
           fluid
           playsInline>
-          <ControlBar autoHide={false} />
-          </Player>
+          <ControlBar autoHide={true} />
+        </Player>
       </div>
     );
   }
