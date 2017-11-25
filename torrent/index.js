@@ -27,7 +27,11 @@ class Torrent {
             .orderBy('date', 'desc')
             .limit(1)
             .onSnapshot(snapshot => {
-                this.addNewTorrent(snapshot.id, snapshot.data().torrentUrl);
+                snapshot.docChanges.forEach(change => {
+                  if (change.type === 'added') {
+                    this.addNewTorrent(change.doc.id, change.doc.data().torrentUrl);
+                  }
+                });
             });
     }
     addNewTorrent(sessionId, torrentFile) {
