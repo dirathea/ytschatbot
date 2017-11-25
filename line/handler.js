@@ -211,7 +211,7 @@ class Handler {
                 };
               });
           });
-          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing watch url for ${parsedData.title}`));
+          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${parsedData.title}`));
         break;
       default:
         break;
