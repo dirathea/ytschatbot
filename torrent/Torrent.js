@@ -81,7 +81,7 @@ class Torrent {
     }
 
     serveFile(req, res) {
-        firestore.doc(`session/${req.parmas.id}`).get()
+        firestore.doc(`session/${req.params.id}`).get()
           .then(snapshot => {
             const sessionData = snapshot.data();
             if (!listTorrent[sessionData.torrentUrl]) {
