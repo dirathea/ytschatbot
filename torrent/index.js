@@ -23,7 +23,6 @@ function encodeRFC5987 (str) {
 
 class Torrent {
     constructor() {
-        super();
         firestore.collection('session')
             .orderBy('date', 'desc')
             .limit(1)
