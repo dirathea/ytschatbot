@@ -11,7 +11,7 @@ const MOVIE_DETAIL_TEMPLATE = `{{title_long}}
 Casts : {{casts}}
 Rating : {{rating}}
 
-{{description_full}}
+{{{description_full}}}
 `;
 
 const MOVIE_MORE_TEXT = `{{year}}

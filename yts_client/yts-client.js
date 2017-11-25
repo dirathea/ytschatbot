@@ -37,6 +37,7 @@ class YtsClient {
   searchMovie(term) {
     return this.listMovie({
       query_term: term,
+      sort_by: 'peers',
     });
   }
 
