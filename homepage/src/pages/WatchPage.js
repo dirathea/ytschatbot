@@ -6,6 +6,10 @@ class WatchPage extends Component {
     return (
       <div>
         <Player
+          style={{
+            width: '100vw',
+            height: '100vh'
+          }}
           src={`/data/${this.props.match.params.id}`}
           fluid
           playsInline>
