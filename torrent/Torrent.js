@@ -38,7 +38,7 @@ class Torrent {
           console.log(err);
         });
 
-        setInterval(expiredTorrent, 3 * 3600 * 1000);
+        setInterval(this.expiredTorrent, 3600 * 1000);
     }
 
     expiredTorrent() {
@@ -59,7 +59,7 @@ class Torrent {
 
     addNewTorrent(sessionId, torrentFile) {
       if (listTorrent[torrentFile]) {
-        return notifySessionReady(sessionId);
+        return this.notifySessionReady(sessionId);
       }
       webtorrent.add(torrentFile, (torrent) => {
             console.log(`Torrent for ${sessionId} is available`);
@@ -68,7 +68,7 @@ class Torrent {
               torrent,
               date: date.getTime(),
             };
-            notifySessionReady(sessionId);
+            this.notifySessionReady(sessionId);
         });
     }
 
