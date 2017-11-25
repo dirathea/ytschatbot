@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ControlBar, Player } from 'video-react';
+import { ControlBar, Player, BigPlayButton } from 'video-react';
 
 class WatchPage extends Component {
   render() {
@@ -15,6 +15,7 @@ class WatchPage extends Component {
           fluid
           playsInline>
           <ControlBar autoHide={true} />
+          <BigPlayButton position="center" style={{display: 'none'}}/>
         </Player>
       </div>
     );
