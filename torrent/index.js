@@ -24,8 +24,6 @@ function encodeRFC5987 (str) {
 class Torrent {
     constructor() {
         firestore.collection('session')
-            .orderBy('date')
-            .limit(1)
             .onSnapshot(snapshot => {
                 snapshot.docChanges.forEach(change => {
                   if (change.type === 'added') {
