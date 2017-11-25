@@ -1,18 +1,5 @@
 import React, { Component } from 'react';
 import * as firebase from "firebase";
-const trackers = [
-  'wss://tracker.btorrent.xyz',
-  'wss://tracker.openwebtorrent.com',
-  'wss://tracker.fastcast.nz',
-];
-
-const torrentOpts = {
-  announce: trackers
-}
-
-const trackerOpts = {
-  announce: trackers
-}
 
 class WatchPage extends Component {
   state = {
@@ -25,9 +12,6 @@ class WatchPage extends Component {
   }
 
   componentDidMount() {
-    this.client.on('error', err => {
-        this.setState({err});
-    });
     this.db.doc(`session/${this.props.match.params.id}`).get().then(snapshot => {
       this.setState({video: snapshot.id()});
     });
