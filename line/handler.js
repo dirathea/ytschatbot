@@ -148,14 +148,17 @@ class Handler {
                 description_full: movie.description_full,
               })
             );
-            const watchAction = messages.actionPostbackTemplate(
-              'Watch Now',
-              qs.stringify({
-                keyword: 'watchlink',
-                movie: movie.torrents[0].url,
-                title: movie.title
-              })
-            );
+            const watchActions = movie.torrents.slice(0, 3).map(torr => {
+              return messages.actionPostbackTemplate(
+                `Watch in ${torr.quality}`,
+                qs.stringify({
+                  keyword: 'watchlink',
+                  movie: torr.url,
+                  title: `${movie.title} (${torr.quality})`
+                })
+              );
+            });
+
             const similarAction = messages.actionPostbackTemplate(
               'Simillar',
               qs.stringify({
@@ -163,6 +166,7 @@ class Handler {
                 data: movie.id,
               })
             );
+            
             const buttonTemplate = messages.buttonTemplate(
               undefined,
               movie.title,
@@ -171,7 +175,7 @@ class Handler {
                 genres: (movie.genres || []).join(', '),
                 mpa_rating: movie.mpa_rating,
               }),
-              [watchAction, similarAction]
+              [watchActions, similarAction]
             );
 
             const buttonMessage = messages.templateMessage(
