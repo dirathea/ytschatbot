@@ -15,9 +15,11 @@ const firestore = admin.firestore();
 class FirebaseClient {
     addWatchSession(userId, torrentUrl) {
         const watchReference = firestore.collection('session');
+        const now = new Date();
         return watchReference.add({
             userId,
-            torrentUrl
+            torrentUrl,
+            date: now.getTime()
         }).then(result => {
             return `${config.BASE_URL}/watch/${result.id}`;
         });

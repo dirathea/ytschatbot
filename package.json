@@ -31,8 +31,12 @@
     "express": "^4.14.0",
     "firebase-admin": "^5.5.0",
     "lodash": "^4.17.4",
+    "mime": "^1.6.0",
     "mustache": "^2.3.0",
+    "pump": "^1.0.3",
     "query-string": "^5.0.1",
-    "utf8": "^2.1.2"
+    "range-parser": "^1.2.0",
+    "utf8": "^2.1.2",
+    "webtorrent": "^0.98.20"
   }
 }

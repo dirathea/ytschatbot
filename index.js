@@ -9,6 +9,9 @@ const config = require('./config');
 const YTSClient = require('./yts_client/yts-client');
 const LineHandler = require('./line/handler');
 const FirebaseClient = require('./firebase_client');
+const Torrent = require('./torrent');
+
+const torrentClient = new Torrent();
 
 const app = express();
 const lineConfig = {
@@ -27,6 +30,8 @@ app.use('/line', middleware(lineConfig), (req, res) => {
   handler.handleRequest(req.body);
   return res.sendStatus(200);
 });
+
+app.use('/data/:id', torrentClient.serveFile);
 
 app.get('*', (req, res) => {
   return res.sendFile(path.resolve(__dirname, 'homepage', 'build', 'index.html'));

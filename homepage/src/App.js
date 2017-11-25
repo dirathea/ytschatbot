@@ -18,7 +18,7 @@ class App extends Component {
     return (
       <BrowserRouter>
         <Switch>
-          <Route exact path="/watch/:hash" component={WatchPage}>
+          <Route exact path="/watch/:id" component={WatchPage}>
           </Route>
           <Route
             render={() => {
