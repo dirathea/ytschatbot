@@ -152,7 +152,8 @@ class Handler {
               'Watch Now',
               qs.stringify({
                 keyword: 'watchlink',
-                movie: movie.torrents[0].url
+                movie: movie.torrents[0].url,
+                title: movie.title
               })
             );
             const similarAction = messages.actionPostbackTemplate(
@@ -196,9 +197,16 @@ class Handler {
       
         case 'watchlink':
         this.firebaseClient.addWatchSession(source.userId, parsedData.movie)
-          .then(url => {
-            this.lineClient.replyMessage(replyToken, messages.textMessage(url));
+          .then(result => {
+            this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
+              .onSnapshot(doc => {
+                if (doc.data().status === 'ready') {
+                  const sessionData = doc.data();
+                  this.lineClient.pushMessage(sessionData.userId, messages.textMessage(result.url));
+                };
+              });
           });
+          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing watch url for ${parsedData.title}`));
         break;
       default:
         break;

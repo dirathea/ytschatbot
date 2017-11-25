@@ -21,8 +21,15 @@ class FirebaseClient {
             torrentUrl,
             date: now.getTime()
         }).then(result => {
-            return `${config.BASE_URL}/watch/${result.id}`;
+            return {
+                id: result.id,
+                url: `${config.BASE_URL}/watch/${result.id}`
+            };
         });
+    }
+
+    getFirestore() {
+        return firestore;
     }
 }
 

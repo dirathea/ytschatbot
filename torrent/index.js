@@ -40,6 +40,11 @@ class Torrent {
         webtorrent.add(torrentFile, (torrent) => {
             console.log(`Torrent for ${sessionId} is available`);
             listTorrent[sessionId] = _.orderBy(torrent.files, ['length'], ['desc'])[0];
+            firestore.doc(`/session/${sessionId}`).update({
+              status: 'ready',
+            }).then(() => {
+              console.log(`URL ${sessionId} is ready`);
+            })
         });
     }
 
