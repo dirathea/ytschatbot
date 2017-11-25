@@ -166,7 +166,8 @@ class Handler {
                 data: movie.id,
               })
             );
-            
+            watchActions.push(similarAction);
+
             const buttonTemplate = messages.buttonTemplate(
               undefined,
               movie.title,
@@ -175,7 +176,7 @@ class Handler {
                 genres: (movie.genres || []).join(', '),
                 mpa_rating: movie.mpa_rating,
               }),
-              [watchActions, similarAction]
+              watchActions
             );
 
             const buttonMessage = messages.templateMessage(
