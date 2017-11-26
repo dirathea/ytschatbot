@@ -230,7 +230,8 @@ Happy watching!`
             .onSnapshot(doc => {
               if (doc.data().status === 'ready') {
                 const sessionData = doc.data();
-                this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${parsedData.title} (${parsedData.qty}) here ${result.url}`))
+                this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${parsedData.title} (${parsedData.qty}) here
+${result.url}`))
                   .then(() => {
                     unsubscribe();
                     this.osClient.getSubsLink({
@@ -247,7 +248,8 @@ Happy watching!`
               };
             });
           });
-          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${parsedData.title} (${parsedData.qty})... We will notify you once the movie is ready`));
+          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${parsedData.title} (${parsedData.qty})...
+We will notify you once the movie is ready`));
         break;
       default:
         break;
