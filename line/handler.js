@@ -175,8 +175,7 @@ Happy watching!`
                   movie: torr.url,
                   image: movie.large_cover_image,
                   title: `${movie.title} (${torr.quality})`,
-                  imdb: movie.imdb_code,
-                  size: torr.size_bytes,
+                  imdb: movie.imdb_code
                 })
               );
             });
@@ -237,7 +236,7 @@ Happy watching!`
             });
             this.osClient.getSubsLink({
               imdbid: parsedData.imdb,
-              filesize: parsedData.size
+              query: parsedData.title
             })
               .then(url => {
                 this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
