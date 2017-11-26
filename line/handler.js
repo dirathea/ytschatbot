@@ -207,11 +207,11 @@ class Handler {
               .onSnapshot(doc => {
                 if (doc.data().status === 'ready') {
                   const sessionData = doc.data();
-                  this.lineClient.pushMessage(sessionData.userId, messages.textMessage(result.url));
+                  this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${parsedData.title} here ${result.url}`));
                 };
               });
           });
-          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${parsedData.title}`));
+          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${parsedData.title}... We will notify you once the movie is ready`));
         break;
       default:
         break;

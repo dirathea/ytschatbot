@@ -65,6 +65,7 @@ class Torrent {
       if (listTorrent[torrentFile]) {
         return this.notifySessionReady(sessionId);
       }
+      console.log(`adding ${torrentFile}`);
       webtorrent.add(torrentFile, (torrent) => {
             console.log(`Torrent for ${sessionId} is available`);
             const date = new Date();
