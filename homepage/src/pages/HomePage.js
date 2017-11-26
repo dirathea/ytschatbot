@@ -12,6 +12,10 @@ const styles = {
     paddingLeft: '10vw',
     paddingRight: '10vw',
   },
+  addButton: {
+    display: 'inline-block',
+    verticalAlign: 'middle'
+  }
 };
 
 class HomePage extends Component {
@@ -47,7 +51,9 @@ class HomePage extends Component {
           <Grid container>
             <Grid item xs={12}>
               <Typography type="headline" align="center">
-                Chat bot for Stream HD Quality Movie
+                Chat bot for Stream HD Quality Movie <a href="https://line.me/R/ti/p/%40azc6953k" style={styles.addButton}>
+                <img height="36" border="0" alt="Tambah Teman" src="https://scdn.line-apps.com/n/line_add_friends/btn/en.png" />
+              </a>
               </Typography>
             </Grid>
             <Grid item>
