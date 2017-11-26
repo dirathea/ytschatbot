@@ -10,8 +10,10 @@ const YTSClient = require('./yts_client/yts-client');
 const LineHandler = require('./line/handler');
 const FirebaseClient = require('./firebase_client');
 const Torrent = require('./torrent/Torrent');
+const OSClient = require('./opensubs_client');
 
 const torrentClient = new Torrent();
+const osClient = new OSClient();
 
 const app = express();
 const lineConfig = {
@@ -22,7 +24,7 @@ const lineConfig = {
 const client = new LineClient(lineConfig);
 const ystClient = new YTSClient(config.YTS_BASE_URL);
 const firebaseClient = new FirebaseClient()
-const handler = new LineHandler(client, ystClient, firebaseClient);
+const handler = new LineHandler(client, ystClient, firebaseClient, osClient);
 
 app.use(express.static(path.resolve(__dirname, 'homepage', 'build')));
 

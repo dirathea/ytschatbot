@@ -20,10 +20,11 @@ Duration : {{duration}} minutes
 {{mpa_rating}}`;
 
 class Handler {
-  constructor(lineClient, ytsClient, firebaseClient) {
+  constructor(lineClient, ytsClient, firebaseClient, osClient) {
     this.lineClient = lineClient;
     this.ytsClient = ytsClient;
     this.firebaseClient = firebaseClient;
+    this.osClient = osClient;
   }
 
   handleRequest(payload) {
@@ -173,7 +174,9 @@ Happy watching!`
                   keyword: 'watchlink',
                   movie: torr.url,
                   image: movie.large_cover_image,
-                  title: `${movie.title} (${torr.quality})`
+                  title: `${movie.title} (${torr.quality})`,
+                  imdb: movie.imdb_code,
+                  size: torr.size_bytes,
                 })
               );
             });
@@ -222,6 +225,16 @@ Happy watching!`
         case 'watchlink':
         this.firebaseClient.addWatchSession(source.userId, parsedData)
           .then(result => {
+            this.osClient.getSubsLink({
+              imdbid: parsedData.imdb,
+              filesize: parsedData.size
+            })
+              .then(url => {
+                this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
+                  .update({
+                    subs: url,
+                  });
+              });
             this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
               .onSnapshot(doc => {
                 if (doc.data().status === 'ready') {
