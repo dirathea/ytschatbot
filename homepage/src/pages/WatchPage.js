@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { DefaultPlayer as Video } from 'react-html5video';
 import 'react-html5video/dist/styles.css';
 import { BasicLayout } from '../components';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 
 class WatchPage extends Component {
   state = {
