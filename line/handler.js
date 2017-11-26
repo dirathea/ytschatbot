@@ -42,10 +42,26 @@ class Handler {
         this.handlePostbackEvent(event);
         break;
 
+      case 'follow':
+        this.handleFollowEvent(event);
+        break;
+
       default:
         console.log(`Unknown type ${type}`);
         break;
     }
+  }
+
+  handleFollowEvent(event) {
+    this.lineClient.getProfile(event.source.userId)
+      .then(profile=> {
+        this.firebaseClient.addUser(profile);
+        const greetingMessage = `Hello ${profile.displayName}! My name is YTS Bot. Chat bot to help you search and stream HD movies directly on your chat app.
+Try typing "search <your movie title>" to getting started.
+
+Happy watching!`
+        this.lineClient.replyMessage(event.replyToken, messages.textMessage(greetingMessage));
+      });
   }
 
   handleMessageEvent(event) {

@@ -30,6 +30,14 @@ class FirebaseClient {
         });
     }
 
+    addUser(profile) {
+        firestore.doc(`users/${profile.userId}`)
+            .set(profile)
+            .then(result => {
+                console.log(`User ${profile.displayName} saved`);
+            });
+    }
+
     getFirestore() {
         return firestore;
     }
