@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
 import { BasicLayout } from '../components';
-import {
-  Grid,
-  IconButton,
-  Typography,
-} from 'material-ui';
-import { GridList, GridListTile, GridListTileBar } from "material-ui/GridList";
+import { Grid, IconButton, Typography } from 'material-ui';
+import { GridList, GridListTile, GridListTileBar } from 'material-ui/GridList';
 import { PlayCircleOutline } from 'material-ui-icons';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 
+const styles = {
+  main: {
+    maxWidth: '100vw',
+    paddingLeft: '10vw',
+    paddingRight: '10vw',
+  },
+};
+
 class HomePage extends Component {
+  state = {};
   componentDidMount() {
     const firestore = firebase.firestore();
     const expireDate = new Date();
@@ -38,16 +43,21 @@ class HomePage extends Component {
   render() {
     return (
       <BasicLayout title="YTS Movie">
-        <Grid container>
-          <Grid item xs={12}>
-            <Typography type="headline" align="center">
-              Chat bot for Stream HD Quality Movie
-            </Typography>
+        <div style={styles.main}>
+          <Grid container>
+            <Grid item xs={12}>
+              <Typography type="headline" align="center">
+                Chat bot for Stream HD Quality Movie
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Typography type="title" gutterBottom>
+                Currently Streamed :{' '}
+              </Typography>
+              {this.renderReadyMovie()}
+            </Grid>
           </Grid>
-          <Grid item>
-            <Typography type="title">Currently Streamed</Typography>
-          </Grid>
-        </Grid>
+        </div>
       </BasicLayout>
     );
   }
@@ -59,14 +69,16 @@ class HomePage extends Component {
     const grid = Object.keys(this.state.readyMovie).map(url => {
       const movieData = this.state.readyMovie[url];
       return (
-        <GridListTile>
-          <img src={movieData.image} />
+        <GridListTile key={`movie ${movieData.id}`}>
+          <img src={movieData.image} alt={`cover ${movieData.title}`}/>
           <GridListTileBar
             title={movieData.title}
             actionIcon={
-              <IconButton>
-                <PlayCircleOutline />
-              </IconButton>
+              <a href={`/watch/${movieData.id}`}>
+                <IconButton>
+                  <PlayCircleOutline />
+                </IconButton>
+              </a>
             }
           />
         </GridListTile>
