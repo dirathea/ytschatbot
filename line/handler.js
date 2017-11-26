@@ -154,6 +154,7 @@ class Handler {
                 qs.stringify({
                   keyword: 'watchlink',
                   movie: torr.url,
+                  image: movie.large_cover_image,
                   title: `${movie.title} (${torr.quality})`
                 })
               );
@@ -201,7 +202,7 @@ class Handler {
         break;
       
         case 'watchlink':
-        this.firebaseClient.addWatchSession(source.userId, parsedData.movie)
+        this.firebaseClient.addWatchSession(source.userId, parsedData)
           .then(result => {
             this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
               .onSnapshot(doc => {

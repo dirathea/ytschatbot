@@ -1,41 +1,33 @@
 import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
-import * as firebase from "firebase";
+import { MuiThemeProvider, createMuiTheme } from 'material-ui';
+import * as firebase from 'firebase';
 // Required for side-effects
-import "firebase/firestore";
-import logo from './logo.svg';
+import 'firebase/firestore';
 import './App.css';
-import WatchPage from "./pages/WatchPage";
+import { HomePage, WatchPage } from './pages';
 
 firebase.initializeApp({
   apiKey: 'AIzaSyCrpY3NGrNXzLfBUbjBYnfnNPEp5j_Q8Ng',
   authDomain: 'ytsbotindo.firebaseapp.com',
-  projectId: 'ytsbotindo'
+  projectId: 'ytsbotindo',
+});
+
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+  },
 });
 
 class App extends Component {
   render() {
     return (
+      <MuiThemeProvider theme={theme}>
         <Switch>
-          <Route exact path="/watch/:id" component={WatchPage}>
-          </Route>
-          <Route
-            render={() => {
-              return (
-                <div className="App">
-                  <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo" />
-                    <h1 className="App-title">Welcome to React</h1>
-                  </header>
-                  <p className="App-intro">
-                    To get started, edit <code>src/App.js</code> and save to
-                    reload.
-                  </p>
-                </div>
-              );
-            }}
-          />
+          <Route exact path="/watch/:id" component={WatchPage} />
+          <Route component={HomePage} />
         </Switch>
+      </MuiThemeProvider>
     );
   }
 }

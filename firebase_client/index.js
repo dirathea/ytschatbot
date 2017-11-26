@@ -13,12 +13,14 @@ admin.initializeApp({
 const firestore = admin.firestore();
 
 class FirebaseClient {
-    addWatchSession(userId, torrentUrl) {
+    addWatchSession(userId, movieData) {
         const watchReference = firestore.collection('session');
         const now = new Date();
         return watchReference.add({
             userId,
-            torrentUrl,
+            torrentUrl: movieData.torrentUrl,
+            image: movieData.imageUrl,
+            title: movieData.title,
             date: now.getTime()
         }).then(result => {
             return {
