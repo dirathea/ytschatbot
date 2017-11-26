@@ -49,7 +49,7 @@ class Torrent {
     expiredTorrent() {
       console.log(`Destroying old torrent`);
       const expiredDate = new Date();
-      expiredDate.setHours(expiredDate.getHours-3);
+      expiredDate.setHours(expiredDate.getHours()-3);
       _.keys(listTorrent).forEach(url => {
         const torr = listTorrent[url];
         if (torr.date < expiredDate.getTime()) {
