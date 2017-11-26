@@ -10,12 +10,13 @@ const handleError = err => {
 const MOVIE_DETAIL_TEMPLATE = `{{title_long}}
 Casts : {{casts}}
 Rating : {{rating}}
+Genre: {{genre}}
 
 {{{description_full}}}
 `;
 
 const MOVIE_MORE_TEXT = `{{year}}
-{{genres}}
+Duration : {{duration}} minutes
 {{mpa_rating}}`;
 
 class Handler {
@@ -162,6 +163,7 @@ Happy watching!`
                 casts: (movie.cast || []).map(cast => cast.name).join(', '),
                 rating: movie.rating,
                 description_full: movie.description_full,
+                genre: (movie.genres || []).join(', ')
               })
             );
             const watchActions = movie.torrents.slice(0, 3).map(torr => {
@@ -190,7 +192,7 @@ Happy watching!`
               movie.title,
               mustache.render(MOVIE_MORE_TEXT, {
                 year: movie.year,
-                genres: (movie.genres.slice(0,3) || []).join(', '),
+                duration: movie.runtime,
                 mpa_rating: movie.mpa_rating,
               }),
               watchActions
