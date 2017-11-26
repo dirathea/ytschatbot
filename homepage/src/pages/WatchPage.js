@@ -4,15 +4,40 @@ import 'react-html5video/dist/styles.css';
 import { BasicLayout } from '../components';
 
 class WatchPage extends Component {
+  state = {
+    subsUrl: null,
+    title: 'Watch Movie',
+  };
+
+  componentDidMount() {
+    const firestore = firebase.firestore();
+    firestore
+      .doc(`/session/${this.props.match.params.id}`)
+      .get()
+      .then(snapshot => {
+        const movieData = snapshot.data();
+        this.setState({
+          subsUrl: movieData.subs,
+          title: movieData.title,
+        });
+      });
+  }
   render() {
     return (
-      <BasicLayout title="Watch Movie">
+      <BasicLayout title={this.state.title}>
         <div>
           <Video
             src={`/data/${this.props.match.params.id}`}
             autoPlay
-            controls={['PlayPause', 'Seek', 'Time', 'Volume', 'Fullscreen']}
-          />
+            controls={['PlayPause', 'Seek', 'Time', 'Volume', 'Fullscreen']}>
+            <track
+              label="English"
+              kind="subtitles"
+              srcLang="en"
+              src={this.state.subsUrl}
+              default
+            />
+          </Video>
         </div>
       </BasicLayout>
     );
