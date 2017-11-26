@@ -18,8 +18,8 @@ class FirebaseClient {
         const now = new Date();
         return watchReference.add({
             userId,
-            torrentUrl: movieData.torrentUrl,
-            image: movieData.imageUrl,
+            torrentUrl: movieData.movie,
+            image: movieData.image,
             title: movieData.title,
             date: now.getTime()
         }).then(result => {
