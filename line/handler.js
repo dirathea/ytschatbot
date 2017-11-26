@@ -233,19 +233,19 @@ Happy watching!`
                 this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${parsedData.title} (${parsedData.qty}) here ${result.url}`))
                   .then(() => {
                     unsubscribe();
+                    this.osClient.getSubsLink({
+                      imdbid: parsedData.imdb,
+                      filesize: parsedData.size
+                    })
+                      .then(url => {
+                        this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
+                          .update({
+                            subs: url,
+                          });
+                      });
                   });
               };
             });
-            this.osClient.getSubsLink({
-              imdbid: parsedData.imdb,
-              filesize: parsedData.size
-            })
-              .then(url => {
-                this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
-                  .update({
-                    subs: url,
-                  });
-              });
           });
           this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${parsedData.title} (${parsedData.qty})... We will notify you once the movie is ready`));
         break;
