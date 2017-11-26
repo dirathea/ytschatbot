@@ -63,6 +63,7 @@ class Torrent {
     }
 
     addNewTorrent(sessionId, torrentFile) {
+      console.log(listTorrent[torrentFile]);
       if (listTorrent[torrentFile]) {
         return this.notifySessionReady(sessionId);
       }
