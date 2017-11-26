@@ -225,6 +225,16 @@ Happy watching!`
         case 'watchlink':
         this.firebaseClient.addWatchSession(source.userId, parsedData)
           .then(result => {
+            const unsubscribe = this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
+            .onSnapshot(doc => {
+              if (doc.data().status === 'ready') {
+                const sessionData = doc.data();
+                this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${parsedData.title} here ${result.url}`))
+                  .then(() => {
+                    unsubscribe();
+                  });
+              };
+            });
             this.osClient.getSubsLink({
               imdbid: parsedData.imdb,
               filesize: parsedData.size
@@ -234,13 +244,6 @@ Happy watching!`
                   .update({
                     subs: url,
                   });
-              });
-            this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
-              .onSnapshot(doc => {
-                if (doc.data().status === 'ready') {
-                  const sessionData = doc.data();
-                  this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${parsedData.title} here ${result.url}`));
-                };
               });
           });
           this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${parsedData.title}... We will notify you once the movie is ready`));
