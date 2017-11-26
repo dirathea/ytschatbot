@@ -14,8 +14,8 @@ const styles = {
   },
   addButton: {
     display: 'inline-block',
-    verticalAlign: 'middle'
-  }
+    verticalAlign: 'middle',
+  },
 };
 
 class HomePage extends Component {
@@ -51,18 +51,26 @@ class HomePage extends Component {
           <Grid container>
             <Grid item xs={12}>
               <Typography type="headline" align="center">
-                Chat bot for Stream HD Quality Movie <a href="https://line.me/R/ti/p/%40azc6953k" style={styles.addButton}>
-                <img height="36" border="0" alt="Tambah Teman" src="https://scdn.line-apps.com/n/line_add_friends/btn/en.png" />
-              </a>
+                Chat bot for Stream HD Quality Movie{' '}
+                <a
+                  href="https://line.me/R/ti/p/%40azc6953k"
+                  style={styles.addButton}>
+                  <img
+                    height="36"
+                    border="0"
+                    alt="Tambah Teman"
+                    src="https://scdn.line-apps.com/n/line_add_friends/btn/en.png"
+                  />
+                </a>
               </Typography>
             </Grid>
             <Grid item>
               <Typography type="title" gutterBottom>
-                Currently Streamed :{' '}
+                Currently Streamed :
               </Typography>
-              {this.renderReadyMovie()}
             </Grid>
           </Grid>
+          <div style={{ width: '100%' }}>{this.renderReadyMovie()}</div>
         </div>
       </BasicLayout>
     );
@@ -76,7 +84,7 @@ class HomePage extends Component {
       const movieData = this.state.readyMovie[url];
       return (
         <GridListTile key={`movie ${movieData.id}`}>
-          <img src={movieData.image} alt={`cover ${movieData.title}`}/>
+          <img src={movieData.image} alt={`cover ${movieData.title}`} />
           <GridListTileBar
             title={movieData.title}
             actionIcon={
@@ -91,7 +99,11 @@ class HomePage extends Component {
       );
     });
 
-    return <GridList>{grid}</GridList>;
+    return (
+      <GridList cols={4} style={{ width: '100%' }}>
+        {grid}
+      </GridList>
+    );
   }
 }
 
