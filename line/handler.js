@@ -174,8 +174,10 @@ Happy watching!`
                   keyword: 'watchlink',
                   movie: torr.url,
                   image: movie.large_cover_image,
-                  title: `${movie.title} (${torr.quality})`,
-                  imdb: movie.imdb_code
+                  title: movie.title,
+                  qty: torr.quality,
+                  imdb: movie.imdb_code,
+                  size: torr.size_bytes,
                 })
               );
             });
@@ -228,7 +230,7 @@ Happy watching!`
             .onSnapshot(doc => {
               if (doc.data().status === 'ready') {
                 const sessionData = doc.data();
-                this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${parsedData.title} here ${result.url}`))
+                this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${parsedData.title} (${parsedData.qty}) here ${result.url}`))
                   .then(() => {
                     unsubscribe();
                   });
@@ -236,7 +238,7 @@ Happy watching!`
             });
             this.osClient.getSubsLink({
               imdbid: parsedData.imdb,
-              query: parsedData.title
+              filesize: parsedData.size
             })
               .then(url => {
                 this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
@@ -245,7 +247,7 @@ Happy watching!`
                   });
               });
           });
-          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${parsedData.title}... We will notify you once the movie is ready`));
+          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${parsedData.title} (${parsedData.qty})... We will notify you once the movie is ready`));
         break;
       default:
         break;
