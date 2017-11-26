@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 import * as firebase from "firebase";
 // Required for side-effects
 import "firebase/firestore";
@@ -16,7 +16,6 @@ firebase.initializeApp({
 class App extends Component {
   render() {
     return (
-      <BrowserRouter>
         <Switch>
           <Route exact path="/watch/:id" component={WatchPage}>
           </Route>
@@ -37,7 +36,6 @@ class App extends Component {
             }}
           />
         </Switch>
-      </BrowserRouter>
     );
   }
 }
