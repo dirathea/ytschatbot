@@ -1,6 +1,7 @@
 const os = require('opensubtitles-api');
+const config = require('../config');
 const osClient = new os({
-    useragent:'UserAgent',
+    useragent: config.OS_USER_AGENT,
     ssl: true,
 });
 class OpenSubsClient {
