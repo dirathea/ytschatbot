@@ -28,8 +28,12 @@ class Torrent {
             .onSnapshot(snapshot => {
                 snapshot.docChanges.forEach(change => {
                   const torrentUrl = change.doc.data().torrentUrl;
+                  const limitDate = new Date();
+                  limitDate.setHours(limitDate.getHours - 3);
                   if (change.type === 'added') {
-                    this.addNewTorrent(change.doc.id, torrentUrl);
+                    if (change.doc.data().date > limitDate.getTime()) {
+                      this.addNewTorrent(change.doc.id, torrentUrl);
+                    }
                   }
                 });
             });
