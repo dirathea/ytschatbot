@@ -190,7 +190,7 @@ Happy watching!`
               movie.title,
               mustache.render(MOVIE_MORE_TEXT, {
                 year: movie.year,
-                genres: (movie.genres || []).join(', '),
+                genres: (movie.genres.slice(0,3) || []).join(', '),
                 mpa_rating: movie.mpa_rating,
               }),
               watchActions
