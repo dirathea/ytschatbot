@@ -11,8 +11,8 @@ class OpenSubsClient {
         console.log(searchParams);
         return osClient.search(searchParams)
         .then(subtitles => {
+            console.log(subtitles);
             if (subtitles.en) {
-                console.log(subtitles.en);
                 return subtitles.en.url
             }
             return "";
