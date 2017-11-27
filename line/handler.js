@@ -234,17 +234,17 @@ Happy watching!`
 ${result.url}`))
                   .then(() => {
                     unsubscribe();
-                    this.osClient.getSubsLink({
-                      imdbid: parsedData.imdb,
-                      filesize: parsedData.size
-                    })
-                      .then(url => {
-                        this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
-                          .update({
-                            subs: url,
-                          });
-                      });
                   });
+                  this.osClient.getSubsLink({
+                    imdbid: parsedData.imdb,
+                    filesize: parsedData.size
+                  })
+                    .then(url => {
+                      this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
+                        .update({
+                          subs: url,
+                        });
+                    });
               };
             });
           });
