@@ -35,12 +35,12 @@ app.use('/line', middleware(lineConfig), (req, res) => {
 });
 
 app.use('/data/:id', torrentClient.serveFile);
-app.get('/subs/:id', (req, res) => {
+app.use('/subs/:id', (req, res) => {
   firebaseClient.getFirestore()
     .doc(`session/${req.params.id}`)
     .get()
     .then(snapshot => {
-      const subsLink = snapshot.data();
+      const subsLink = snapshot.data().subs;
       axios.get(subsLink, {responseType: 'arraybuffer'})
         .then(response => {
           res.write(response);
