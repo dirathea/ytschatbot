@@ -10,6 +10,7 @@ class OpenSubsClient {
         return osClient.search(searchParams)
         .then(subtitles => {
             if (subtitles.en) {
+                console.log(subtitles.en);
                 return subtitles.en.url
             }
             return "";
