@@ -31,6 +31,7 @@ class WatchPage extends Component {
           <Video
             src={`/data/${this.props.match.params.id}`}
             autoPlay
+            crossorigin="anonymous"
             controls={['PlayPause', 'Seek', 'Time', 'Volume', 'Fullscreen', 'Captions']}>
             <track
               label="English"
