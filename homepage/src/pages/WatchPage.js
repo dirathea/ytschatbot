@@ -31,13 +31,13 @@ class WatchPage extends Component {
           <Video
             src={`/data/${this.props.match.params.id}`}
             autoPlay
-            crossorigin="anonymous"
+            crossOrigin="anonymous"
             controls={['PlayPause', 'Seek', 'Time', 'Volume', 'Fullscreen', 'Captions']}>
             <track
               label="English"
               kind="subtitles"
               srcLang="en"
-              src={this.state.subsUrl}
+              src={`/subs/${this.props.match.params.id}`}
               default
             />
           </Video>

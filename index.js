@@ -5,6 +5,7 @@ const express = require('express');
 const LineClient = require('@line/bot-sdk').Client;
 const middleware = require('@line/bot-sdk').middleware;
 const path = require('path');
+const axios = require('axios');
 const config = require('./config');
 const YTSClient = require('./yts_client/yts-client');
 const LineHandler = require('./line/handler');
@@ -34,6 +35,18 @@ app.use('/line', middleware(lineConfig), (req, res) => {
 });
 
 app.use('/data/:id', torrentClient.serveFile);
+app.get('/subs/:id', (req, res) => {
+  firebaseClient.getFirestore()
+    .doc(`session/${req.params.id}`)
+    .get()
+    .then(snapshot => {
+      const subsLink = snapshot.data();
+      axios.get(subsLink, {responseType: 'arraybuffer'})
+        .then(response => {
+          res.write(response);
+        });
+    });
+});
 
 app.get('*', (req, res) => {
   return res.sendFile(path.resolve(__dirname, 'homepage', 'build', 'index.html'));
