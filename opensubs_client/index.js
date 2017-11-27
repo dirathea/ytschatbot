@@ -7,7 +7,7 @@ const osClient = new os({
 class OpenSubsClient {
     getSubsLink(params) {
         console.log("Searching subs");
-        const searchParams = Object.assign(params, {extensions: 'vtt'});
+        const searchParams = Object.assign(params);
         console.log(searchParams);
         return osClient.search(searchParams)
         .then(subtitles => {
