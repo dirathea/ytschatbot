@@ -10,6 +10,7 @@ const osClient = new os({
 class OpenSubsClient {
     constructor() {
         this.bucket = firebase.storage().bucket();
+        this.firestore = firebase.firestore();
     }
     getSubsLink(id, params) {
         console.log("Searching subs");
@@ -25,6 +26,19 @@ class OpenSubsClient {
                         stream.pipe(subtitleFile.createWriteStream())
                             .on('error', err => console.log(err))
                             .on('finish', () => {
+                                const expiredDate = new Date();
+                                expiredDate.setMonth(expiredDate.getMonth() + 1);
+                                subtitleFile.getSignedUrl({
+                                    action: 'read',
+                                    expires: expiredDate.toString,
+                                }, (err, url) => {
+                                    if (err) {
+                                        console.log(err);
+                                    } else {
+                                        this.firestore.doc(`/session/${id}`)
+                                            .update({subs: url});
+                                    }
+                                })
                                 console.log('upload finished');
                             })
                     });

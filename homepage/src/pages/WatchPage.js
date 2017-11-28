@@ -37,7 +37,7 @@ class WatchPage extends Component {
               label="English"
               kind="subtitles"
               srcLang="en"
-              src={`/subs/${this.props.match.params.id}`}
+              src={this.state.subsUrl}
               default
             />
           </Video>
