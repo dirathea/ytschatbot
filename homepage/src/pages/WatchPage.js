@@ -18,8 +18,15 @@ class WatchPage extends Component {
       .get()
       .then(snapshot => {
         const movieData = snapshot.data();
+        const targetedLang = ['en', 'id'];
+        const targetedSubs = movieData.subs.reduce((prev, curr) => {
+          if (targetedLang.indexOf(curr.lang) > -1) {
+            return [...prev, curr];
+          }
+          return prev;
+        }, []);
         this.setState({
-          subsUrl: movieData.subs,
+          subsUrl: targetedSubs,
           title: movieData.title,
         });
       });
