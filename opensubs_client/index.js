@@ -30,6 +30,7 @@ class OpenSubsClient {
                                 .pipe(subtitleFile.createWriteStream())
                                     .on('error', err => console.log(err))
                                     .on('finish', () => {
+                                        console.log(subtitles[lang]);
                                         const expiredDate = new Date();
                                         expiredDate.setMonth(expiredDate.getMonth() + 1);
                                         subtitleFile.getSignedUrl({
@@ -40,13 +41,13 @@ class OpenSubsClient {
                                                 console.log(err);
                                                 return resolve({
                                                     lang,
-                                                    langName: subtitles[lang].langName,
+                                                    langName: subtitles[lang].langname,
                                                     url: ''
                                                 });
                                             } else {
                                                 return resolve({
                                                     lang,
-                                                    langName: subtitles[lang].langName,
+                                                    langName: subtitles[lang].langname,
                                                     url
                                                 });
                                             }
