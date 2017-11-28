@@ -230,15 +230,14 @@ Happy watching!`
             .onSnapshot(doc => {
               if (doc.data().status === 'ready') {
                 const sessionData = doc.data();
+                unsubscribe();
                 this.osClient.getSubsLink(result.id, {
                   imdbid: parsedData.imdb,
                   filesize: parsedData.size
+                }).then(() => {
+                  this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${parsedData.title} (${parsedData.qty}) here
+                  ${result.url}`))
                 });
-                this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${parsedData.title} (${parsedData.qty}) here
-${result.url}`))
-                  .then(() => {
-                    unsubscribe();
-                  });
               };
             });
           });

@@ -21,7 +21,7 @@ class FirebaseClient {
             userId,
             torrentUrl: movieData.movie,
             image: movieData.image,
-            title: movieData.title,
+            title: `${movieData.title} (${movieData.qty})`,
             date: now.getTime()
         }).then(result => {
             return {

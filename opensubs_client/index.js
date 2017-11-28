@@ -56,21 +56,24 @@ class OpenSubsClient {
                             });
                         });
                 });
-                Promise.all(downloadProcess)
+                return Promise.all(downloadProcess)
                     .then(result => {
                         console.log(result);
                         this.firestore.doc(`/session/${id}`)
                         .update({subs: result})
                         .then(() => {
                             console.log(`All supported subs ready`);
+                            return Promise.resolve();
                         })
                         .catch(err => {
                             console.log(err);
+                            return Promise.resolve();
                         });
                     })
                     .catch(err => {
                         console.log(err);
-                    })
+                        return Promise.resolve();
+                    });
         });
     }
 
