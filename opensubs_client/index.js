@@ -1,5 +1,6 @@
 const os = require('opensubtitles-api');
 const axios = require('axios');
+const srtToVtt = require('srt-to-vtt');
 const config = require('../config');
 const firebase = require('firebase-admin');
 
@@ -22,8 +23,10 @@ class OpenSubsClient {
             if (subtitles.en) {
                 this.downloadSubtitle(subtitles.en.url)
                     .then(stream => {
-                        const subtitleFile = this.bucket.file(`subtitles/${id}/en/${subtitles.en.filename}`);
-                        stream.pipe(subtitleFile.createWriteStream())
+                        const subtitleFile = this.bucket.file(`subtitles/${id}/en/${subtitles.en.filename.replace('.srt', '.vtt')}`);
+                        stream
+                        .pip(srtToVtt())
+                        .pipe(subtitleFile.createWriteStream())
                             .on('error', err => console.log(err))
                             .on('finish', () => {
                                 const expiredDate = new Date();
