@@ -236,7 +236,7 @@ Happy watching!`
                   filesize: parsedData.size
                 }).then(() => {
                   this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${parsedData.title} (${parsedData.qty}) here
-                  ${result.url}`))
+${result.url}`))
                 });
               };
             });

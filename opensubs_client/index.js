@@ -40,14 +40,14 @@ class OpenSubsClient {
                                             if (err) {
                                                 console.log(err);
                                                 return resolve({
-                                                    lang,
-                                                    langName: subtitles[lang].langname,
+                                                    lang: subtitles[lang].code,
+                                                    langName: subtitles[lang].lang,
                                                     url: ''
                                                 });
                                             } else {
                                                 return resolve({
-                                                    lang,
-                                                    langName: subtitles[lang].langname,
+                                                    lang: subtitles[lang].code,
+                                                    langName: subtitles[lang].lang,
                                                     url
                                                 });
                                             }
