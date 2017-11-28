@@ -106,6 +106,13 @@ Happy watching!`
             data: movie.id,
           })
         ),
+        messages.actionPostbackTemplate(
+          'Simillar',
+          qs.stringify({
+            keyword: 'suggestion',
+            data: movie.id,
+          })
+        )
       ];
       return messages.carouselColumnTemplate(
         movie.large_cover_image,
@@ -181,15 +188,6 @@ Happy watching!`
                 })
               );
             });
-
-            const similarAction = messages.actionPostbackTemplate(
-              'Simillar',
-              qs.stringify({
-                keyword: 'suggestion',
-                data: movie.id,
-              })
-            );
-            watchActions.push(similarAction);
 
             const buttonTemplate = messages.buttonTemplate(
               undefined,
