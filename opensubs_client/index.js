@@ -15,12 +15,12 @@ class OpenSubsClient {
     }
     getSubsLink(id, params) {
         console.log("Searching subs");
-        return this.firestore.doc(`/subs/${params.imdbid}`)
+        return this.firestore.doc(`/subs/${params.imdbid}_${params.filesize}`)
             .get()
             .then(snapshot => {
                 if (snapshot.exists) {
                     return this.firestore.doc(`/session/${id}`)
-                        .update({subs: snapshot.doc()});
+                        .update({subs: snapshot.data()});
                 }
                 return osClient.search(params)
                 .then(subtitles => {
@@ -63,7 +63,7 @@ class OpenSubsClient {
                         });
                         return Promise.all(downloadProcess)
                             .then(result => {
-                                this.firestore.doc(`/subs/${params.imdbid}`)
+                                this.firestore.doc(`/subs/${params.imdbid}_${params.filesize}`)
                                     .set({subs: result});
                                 this.firestore.doc(`/session/${id}`)
                                 .update({subs: result})
