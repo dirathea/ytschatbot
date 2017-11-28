@@ -65,7 +65,7 @@ class OpenSubsClient {
                             .then(result => {
                                 console.log(result);
                                 this.firestore.doc(`/subs/${params.imdbid}`)
-                                    .update({subs: result});
+                                    .set({subs: result});
                                 this.firestore.doc(`/session/${id}`)
                                 .update({subs: result})
                                 .then(() => {
