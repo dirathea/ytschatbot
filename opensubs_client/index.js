@@ -45,13 +45,13 @@ class OpenSubsClient {
                                                     if (err) {
                                                         console.log(err);
                                                         return resolve({
-                                                            lang: subtitles[lang].code,
+                                                            lang: subtitles[lang].langcode,
                                                             langName: subtitles[lang].lang,
                                                             url: ''
                                                         });
                                                     } else {
                                                         return resolve({
-                                                            lang: subtitles[lang].code,
+                                                            lang: subtitles[lang].langcode,
                                                             langName: subtitles[lang].lang,
                                                             url
                                                         });
