@@ -42,9 +42,12 @@ app.use('/subs/:id', (req, res) => {
     .then(snapshot => {
       const subsLink = snapshot.data().subs;
       console.log(`requesting ${subsLink}`);
-      axios.get(subsLink, {responseType: 'arraybuffer'})
+      axios.get(subsLink, {responseType: 'TextTrack'})
         .then(response => {
           res.write(response.data);
+        })
+        .catch(err => {
+          res.send(err);
         });
     });
 });
