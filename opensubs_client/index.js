@@ -63,7 +63,6 @@ class OpenSubsClient {
                         });
                         return Promise.all(downloadProcess)
                             .then(result => {
-                                console.log(result);
                                 this.firestore.doc(`/subs/${params.imdbid}`)
                                     .set({subs: result});
                                 this.firestore.doc(`/session/${id}`)
