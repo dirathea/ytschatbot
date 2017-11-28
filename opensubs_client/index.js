@@ -25,7 +25,7 @@ class OpenSubsClient {
                     .then(stream => {
                         const subtitleFile = this.bucket.file(`subtitles/${id}/en/${subtitles.en.filename.replace('.srt', '.vtt')}`);
                         stream
-                        .pip(srtToVtt())
+                        .pipe(srtToVtt())
                         .pipe(subtitleFile.createWriteStream())
                             .on('error', err => console.log(err))
                             .on('finish', () => {
