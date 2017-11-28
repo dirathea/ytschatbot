@@ -30,7 +30,7 @@ class OpenSubsClient {
                                 expiredDate.setMonth(expiredDate.getMonth() + 1);
                                 subtitleFile.getSignedUrl({
                                     action: 'read',
-                                    expires: expiredDate.toString,
+                                    expires: expiredDate.toString(),
                                 }, (err, url) => {
                                     if (err) {
                                         console.log(err);
