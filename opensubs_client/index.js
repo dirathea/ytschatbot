@@ -57,6 +57,7 @@ class OpenSubsClient {
                 });
                 Promise.all(downloadProcess)
                     .then(result => {
+                        console.log(result);
                         this.firestore.doc(`/session/${id}`)
                         .update({subs: result})
                         .then(() => {
