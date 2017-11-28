@@ -7,7 +7,7 @@ import 'firebase/firestore';
 
 class WatchPage extends Component {
   state = {
-    subsUrl: null,
+    subsUrl: [],
     title: 'Watch Movie',
   };
 
