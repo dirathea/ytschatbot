@@ -234,12 +234,12 @@ Happy watching!`
 ${result.url}`))
                   .then(() => {
                     unsubscribe();
-                    this.osClient.getSubsLink(result.id, {
-                      imdbid: parsedData.imdb,
-                      filesize: parsedData.size
-                    });
                   });
               };
+              this.osClient.getSubsLink(result.id, {
+                imdbid: parsedData.imdb,
+                filesize: parsedData.size
+              });
             });
           });
           this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${parsedData.title} (${parsedData.qty})...

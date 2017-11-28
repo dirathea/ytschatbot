@@ -32,14 +32,23 @@ class WatchPage extends Component {
             src={`/data/${this.props.match.params.id}`}
             autoPlay
             crossOrigin="anonymous"
-            controls={['PlayPause', 'Seek', 'Time', 'Volume', 'Fullscreen', 'Captions']}>
-            <track
-              label="English"
-              kind="subtitles"
-              srcLang="en"
-              src={this.state.subsUrl}
-              default
-            />
+            controls={[
+              'PlayPause',
+              'Seek',
+              'Time',
+              'Volume',
+              'Fullscreen',
+              'Captions',
+            ]}>
+            {this.state.subsUrl.map(subs => (
+              <track
+                label={subs.langName}
+                kind="subtitles"
+                srcLang={subs.lang}
+                src={subs.url}
+                default={subs.lang === 'en'}
+              />
+            ))}
           </Video>
         </div>
       </BasicLayout>

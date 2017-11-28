@@ -19,33 +19,50 @@ class OpenSubsClient {
         console.log(searchParams);
         return osClient.search(searchParams)
         .then(subtitles => {
-            console.log(subtitles);
-            if (subtitles.en) {
-                this.downloadSubtitle(subtitles.en.url)
-                    .then(stream => {
-                        const subtitleFile = this.bucket.file(`subtitles/${id}/en/${subtitles.en.filename.replace('.srt', '.vtt')}`);
-                        stream
-                        .pipe(srtToVtt())
-                        .pipe(subtitleFile.createWriteStream())
-                            .on('error', err => console.log(err))
-                            .on('finish', () => {
-                                const expiredDate = new Date();
-                                expiredDate.setMonth(expiredDate.getMonth() + 1);
-                                subtitleFile.getSignedUrl({
-                                    action: 'read',
-                                    expires: expiredDate.toString(),
-                                }, (err, url) => {
-                                    if (err) {
-                                        console.log(err);
-                                    } else {
-                                        this.firestore.doc(`/session/${id}`)
-                                            .update({subs: url});
-                                    }
-                                })
-                                console.log('upload finished');
-                            })
+            const downloadProcess = Object.keys(subtitles)
+                .map(lang => {
+                    return this.downloadSubtitle(subtitles[lang].url)
+                        .then(stream => {
+                            return new Promise((resolve, reject) => {
+                                const subtitleFile = this.bucket.file(`subtitles/${id}/en/${subtitles.en.filename.replace('.srt', '.vtt')}`);
+                                stream
+                                .pipe(srtToVtt())
+                                .pipe(subtitleFile.createWriteStream())
+                                    .on('error', err => console.log(err))
+                                    .on('finish', () => {
+                                        const expiredDate = new Date();
+                                        expiredDate.setMonth(expiredDate.getMonth() + 1);
+                                        subtitleFile.getSignedUrl({
+                                            action: 'read',
+                                            expires: expiredDate.toString(),
+                                        }, (err, url) => {
+                                            if (err) {
+                                                console.log(err);
+                                                return resolve({
+                                                    lang,
+                                                    langName: subtitles[lang].langName,
+                                                    url: ''
+                                                });
+                                            } else {
+                                                return resolve({
+                                                    lang,
+                                                    langName: subtitles[lang].langName,
+                                                    url
+                                                });
+                                            }
+                                        });
+                                    })
+                            });
+                        });
+                });
+                Promise.all(downloadProcess)
+                    .then(result => {
+                        this.firestore.doc(`/session/${id}`)
+                        .update({subs: result})
+                        .then(() => {
+                            console.log(`All supported subs ready`);
+                        });
                     });
-            }
         });
     }
 
