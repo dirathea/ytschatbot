@@ -61,8 +61,14 @@ class OpenSubsClient {
                         .update({subs: result})
                         .then(() => {
                             console.log(`All supported subs ready`);
+                        })
+                        .catch(err => {
+                            console.log(err);
                         });
-                    });
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
         });
     }
 
