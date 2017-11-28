@@ -24,7 +24,7 @@ class OpenSubsClient {
                     return this.downloadSubtitle(subtitles[lang].url)
                         .then(stream => {
                             return new Promise((resolve, reject) => {
-                                const subtitleFile = this.bucket.file(`subtitles/${id}/${lang}/${subtitles.en.filename.replace('.srt', '.vtt')}`);
+                                const subtitleFile = this.bucket.file(`subtitles/${id}/${lang}/${subtitles[lang].filename.replace('.srt', '.vtt')}`);
                                 stream
                                 .pipe(srtToVtt())
                                 .pipe(subtitleFile.createWriteStream())
