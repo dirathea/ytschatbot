@@ -6,6 +6,7 @@ module.exports = {
     FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL,
     FIREBASE_PRIVATE_KEY: JSON.parse(process.env.FIREBASE_PRIVATE_KEY),
     FIREBASE_DATABASE_URL: process.env.FIREBASE_DATABASE_URL,
+    FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
     BASE_URL: process.env.BASE_URL,
     OS_USER_AGENT: process.env.OS_USER_AGENT || 'TemporaryUserAgent'
 }

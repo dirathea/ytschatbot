@@ -5,7 +5,8 @@ admin.initializeApp({
     credential: admin.credential.cert({
       projectId: config.FIREBASE_PROJECT_ID,
       clientEmail: config.FIREBASE_CLIENT_EMAIL,
-      privateKey: config.FIREBASE_PRIVATE_KEY
+      privateKey: config.FIREBASE_PRIVATE_KEY,
+      storageBucket: config.FIREBASE_STORAGE_BUCKET,
     }),
     databaseURL: config.FIREBASE_DATABASE_URL
   });
