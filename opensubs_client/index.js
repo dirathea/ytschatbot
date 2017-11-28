@@ -1,5 +1,4 @@
 const os = require('opensubtitles-api');
-const axios = require('axios');
 const config = require('../config');
 const firebase = require('firebase-admin');
 
@@ -9,7 +8,7 @@ const osClient = new os({
 });
 class OpenSubsClient {
     constructor() {
-        this.storageRef = firebase.storage().ref();
+        this.bucket = firebase.storage().bucket();
     }
     getSubsLink(id, params) {
         console.log("Searching subs");
@@ -19,14 +18,12 @@ class OpenSubsClient {
         .then(subtitles => {
             console.log(subtitles);
             if (subtitles.en) {
-                const subsRef = this.storageRef.child(`subs/${id}/en/${subtitles.en.filename}`);
-                return axios.get(subtitles.en.url)
-                    .then(resp => {
-                        subsRef.put(resp.data)
-                            .then(snapshot => {
-                                console.log('Subtitle is uploaded');
-                            });
-                    });
+                this.bucket.upload(subtitles.en.url, {
+                    destination: `subtitles/${id}/en/${subtitles.en.filename}`
+                }).then(response => {
+                    console.log(response);
+                    console.log('finish uplading');
+                });
             }
         });
     }
