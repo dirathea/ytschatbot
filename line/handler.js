@@ -100,7 +100,7 @@ Happy watching!`
           `https://www.youtube.com/watch?v=${movie.yt_trailer_code}`
         ),
         messages.actionPostbackTemplate(
-          'Details',
+          'Watch Now',
           qs.stringify({
             keyword: 'movie-detail',
             data: movie.id,
