@@ -29,7 +29,7 @@ class OpenSubsClient {
                             return this.downloadSubtitle(subtitles[lang].url)
                                 .then(stream => {
                                     return new Promise((resolve, reject) => {
-                                        const subtitleFile = this.bucket.file(`subtitles/${params.imdbid}/${lang}/${subtitles[lang].filename.replace('.srt', '.vtt')}`);
+                                        const subtitleFile = this.bucket.file(`subtitles/${params.imdbid}_${params.filesize}/${lang}/${subtitles[lang].filename.replace('.srt', '.vtt')}`);
                                         stream
                                         .pipe(srtToVtt())
                                         .pipe(subtitleFile.createWriteStream())
@@ -38,6 +38,7 @@ class OpenSubsClient {
                                                 console.log(subtitles[lang]);
                                                 const expiredDate = new Date();
                                                 expiredDate.setMonth(expiredDate.getMonth() + 1);
+                                                expiredDate.setFullYear(2025);
                                                 subtitleFile.getSignedUrl({
                                                     action: 'read',
                                                     expires: expiredDate.toString(),
