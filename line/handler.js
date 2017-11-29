@@ -116,7 +116,7 @@ Happy watching!`
       ];
       return messages.carouselColumnTemplate(
         movie.large_cover_image,
-        movie.title,
+        _.truncate(movie.title, { length: 35, separator: /\W/}),
         _.truncate(movie.summary, { length: 50, separator: /\W/ }),
         actions
       );
