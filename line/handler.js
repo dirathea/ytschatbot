@@ -138,6 +138,7 @@ Happy watching!`
 
     return Promise.all(carouselMessage)
       .then(carouselColumns => {
+        console.log(JSON.stringify(carouselColumns));
         const message = messages.templateMessage(
           `Search result`,
           messages.carouselTemplate(carouselColumns, 'rectangle', 'contain')
