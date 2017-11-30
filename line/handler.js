@@ -119,7 +119,7 @@ Happy watching!`
       const backgroundPalettePromise = Vibrant.from(movie.large_cover_image)
         .getPalette()
         .then(palette => {
-          return Promise.resolve(palette.Vibrant.getRgb());
+          return Promise.resolve(palette.Vibrant.getHex());
         })
         .catch(err => {
           return Promise.resolve();
