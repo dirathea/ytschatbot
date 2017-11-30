@@ -1,6 +1,8 @@
 const _ = require('lodash');
 const qs = require('query-string');
 const mustache = require('mustache');
+const Vibrant = require('node-vibrant')
+
 const messages = require('./messages');
 
 const handleError = err => {
@@ -114,19 +116,34 @@ Happy watching!`
           })
         )
       ];
-      return messages.carouselColumnTemplate(
-        movie.large_cover_image,
-        _.truncate(movie.title, { length: 35, separator: /\W/}),
-        _.truncate(movie.summary, { length: 50, separator: /\W/ }),
-        actions
-      );
+      const backgroundPalettePromise = Vibrant.from(movie.large_cover_image)
+        .getPalette()
+        .then(palette => {
+          return Promise.resolve(palette.Vibrant.getRgb());
+        })
+        .catch(err => {
+          return Promise.resolve();
+        });
+        return backgroundPalettePromise
+          .then(background => {
+            return messages.carouselColumnTemplate(
+              movie.large_cover_image,
+              _.truncate(movie.title, { length: 35, separator: /\W/}),
+              _.truncate(movie.summary, { length: 50, separator: /\W/ }),
+              actions,
+              background
+            );
+          });
     });
 
-    const message = messages.templateMessage(
-      `Search result`,
-      messages.carouselTemplate(carouselMessage)
-    );
-    return this.lineClient.replyMessage(replyToken, message).catch(handleError);
+    return Promise.all(carouselMessage)
+      .then(carouselColumns => {
+        const message = messages.templateMessage(
+          `Search result`,
+          messages.carouselTemplate(carouselColumns, 'rectangle', 'contain')
+        );
+        return this.lineClient.replyMessage(replyToken, message).catch(handleError);
+      });
   }
 
   handleTextMessage(replyToken, source, text) {

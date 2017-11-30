@@ -40,13 +40,16 @@ exports.buttonTemplate = (thumbnailImageUrl, title, text, actions) => ({
     actions
 });
 
-exports.carouselTemplate = (columns) => ({
+exports.carouselTemplate = (columns, imageAspectRatio, imageSize) => ({
     type: CAROUSEL_TEMPLATE_TYPE,
-    columns
+    columns,
+    imageAspectRatio,
+    imageSize
 });
 
-exports.carouselColumnTemplate = (thumbnailImageUrl, title, text, actions) => ({
+exports.carouselColumnTemplate = (thumbnailImageUrl, title, text, actions, imageBackgroundColor) => ({
     thumbnailImageUrl,
+    imageBackgroundColor,
     title,
     text,
     actions
