@@ -35,7 +35,6 @@ class OpenSubsClient {
                                         .pipe(subtitleFile.createWriteStream())
                                             .on('error', err => console.log(err))
                                             .on('finish', () => {
-                                                console.log(subtitles[lang]);
                                                 const expiredDate = new Date();
                                                 expiredDate.setMonth(expiredDate.getMonth() + 1);
                                                 expiredDate.setFullYear(2025);
