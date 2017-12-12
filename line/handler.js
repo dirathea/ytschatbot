@@ -166,6 +166,7 @@ Happy watching!`
             image: '',
             title: term,
             qty: '',
+            custom: true
           })
           .then(result => {
             const unsubscribe = this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
@@ -173,13 +174,19 @@ Happy watching!`
               if (doc.data().status === 'ready') {
                 const sessionData = doc.data();
                 unsubscribe();
-                this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${term} here
-                ${result.url}`));
+                const searchTerm = (doc.data().custom) ? {filesize: doc.data().size, filename: doc.data().title} : {
+                  imdbid: parsedData.imdb,
+                  filesize: parsedData.size
+                }
+                this.osClient.getSubsLink(result.id, searchTerm).then(() => {
+                  this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch your torrent here
+${result.url}`))
+                });
               };
             });
           });
-          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${term} watch link...
-          We will notify you once the movie is ready`));
+          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing your torrent watch link...
+We will notify you once the movie is ready`));
           break;
       default:
         console.log(`unknown keyword ${keyword}`);

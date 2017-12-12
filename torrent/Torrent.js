@@ -33,7 +33,7 @@ class Torrent {
                   if (change.type === 'added') {
                     console.log(`added on ${change.doc.data().date} with limit ${limitDate.getTime()}`)
                     if (change.doc.data().date > limitDate.getTime()) {
-                      this.addNewTorrent(change.doc.id, torrentUrl);
+                      this.addNewTorrent(change.doc.id, torrentUrl, change.doc.data().custom);
                     }
                   }
                 });
@@ -62,7 +62,7 @@ class Torrent {
       });
     }
 
-    addNewTorrent(sessionId, torrentFile) {
+    addNewTorrent(sessionId, torrentFile, custom) {
       if (listTorrent[torrentFile]) {
         return this.notifySessionReady(sessionId);
       }
@@ -74,14 +74,17 @@ class Torrent {
               torrent,
               date: date.getTime(),
             };
-            this.notifySessionReady(sessionId);
+            const file = _.orderBy(listTorrent[sessionData.torrentUrl].torrent.files, ['length'], ['desc'])[0];
+            this.notifySessionReady(sessionId, (custom) ? {title: file.name, size: file.length} : false);
         });
     }
 
-    notifySessionReady(sessionId) {
-      firestore.doc(`/session/${sessionId}`).update({
-        status: 'ready',
-      }).then(() => {
+    notifySessionReady(sessionId, customUpdate) {
+      let updateObject = {status: 'ready'};
+      if (customUpdate) {
+        updateObject = Object.assign(updateObject, customUpdate);
+      }
+      firestore.doc(`/session/${sessionId}`).update(updateObject).then(() => {
         console.log(`URL ${sessionId} is ready`);
       })
     }
