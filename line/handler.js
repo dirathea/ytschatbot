@@ -160,6 +160,27 @@ Happy watching!`
           })
           .catch(handleError);
         break;
+      case 'link':
+          this.firebaseClient.addWatchSession(source.userId, {
+            movie: term,
+            image: '',
+            title: term,
+            qty: '',
+          })
+          .then(result => {
+            const unsubscribe = this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
+            .onSnapshot(doc => {
+              if (doc.data().status === 'ready') {
+                const sessionData = doc.data();
+                unsubscribe();
+                this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${term} here
+                ${result.url}`));
+              };
+            });
+          });
+          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${term} watch link...
+          We will notify you once the movie is ready`));
+          break;
       default:
         console.log(`unknown keyword ${keyword}`);
         break;
