@@ -16,7 +16,8 @@ class OpenSubsClient {
     getSubsLink(id, params) {
         console.log("Searching subs");
         console.log(params);
-        return this.firestore.doc(`/subs/${params.imdbid||params.filename}_${params.filesize||0}`)
+        const subsKey = `${params.imdbid||params.filename}_${params.filesize||0}`;
+        return this.firestore.doc(`/subs/${subsKey}`)
             .get()
             .then(snapshot => {
                 if (snapshot.exists) {
@@ -30,7 +31,7 @@ class OpenSubsClient {
                             return this.downloadSubtitle(subtitles[lang].url)
                                 .then(stream => {
                                     return new Promise((resolve, reject) => {
-                                        const subtitleFile = this.bucket.file(`subtitles/${params.imdbid}_${params.filesize}/${lang}/${subtitles[lang].filename.replace('.srt', '.vtt')}`);
+                                        const subtitleFile = this.bucket.file(`subtitles/${subsKey}/${lang}/${subtitles[lang].filename.replace('.srt', '.vtt')}`);
                                         stream
                                         .pipe(srtToVtt())
                                         .pipe(subtitleFile.createWriteStream())
@@ -64,7 +65,7 @@ class OpenSubsClient {
                         });
                         return Promise.all(downloadProcess)
                             .then(result => {
-                                this.firestore.doc(`/subs/${params.imdbid}_${params.filesize}`)
+                                this.firestore.doc(`/subs/${subsKey}`)
                                     .set({subs: result});
                                 this.firestore.doc(`/session/${id}`)
                                 .update({subs: result})
