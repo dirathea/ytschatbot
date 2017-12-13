@@ -15,7 +15,8 @@ class OpenSubsClient {
     }
     getSubsLink(id, params) {
         console.log("Searching subs");
-        return this.firestore.doc(`/subs/${params.imdbid}_${params.filesize}`)
+        console.log(params);
+        return this.firestore.doc(`/subs/${params.imdbid||params.filename}_${params.filesize||0}`)
             .get()
             .then(snapshot => {
                 if (snapshot.exists) {
