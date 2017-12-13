@@ -240,6 +240,7 @@ We will notify you once the movie is ready`));
                 `Watch in ${torr.quality}`,
                 qs.stringify({
                   keyword: 'watchlink',
+                  movieId: movie.id,
                   movie: torr.url,
                   qty: torr.quality,
                   size: torr.size_bytes,
