@@ -181,12 +181,12 @@ Happy watching!`
   }
 
   processTorrent(replyToken, source, params) {
+    const contentString = (params.custom) ? 'your torrent' : `${params.title} (${params.qty})`;
     this.firebaseClient.addWatchSession(source.userId, params)
     .then(result => {
       const unsubscribe = this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
       .onSnapshot(doc => {
         if (doc.data().status === 'ready') {
-          const contentString = (params.custom) ? 'your torrent' : `${params.title} (${params.qty})`;
           const sessionData = doc.data();
           unsubscribe();
           let osParams = {};
