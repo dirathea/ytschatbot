@@ -74,7 +74,7 @@ class Torrent {
               torrent,
               date: date.getTime(),
             };
-            const file = _.orderBy(listTorrent[sessionData.torrentUrl].torrent.files, ['length'], ['desc'])[0];
+            const file = _.orderBy(torrent.files, ['length'], ['desc'])[0];
             this.notifySessionReady(sessionId, (custom) ? {title: file.name, size: file.length} : false);
         });
     }
