@@ -75,7 +75,8 @@ class Torrent {
               date: date.getTime(),
             };
             const file = _.orderBy(torrent.files, ['length'], ['desc'])[0];
-            console.log(file);
+            console.log(`name : ${file.name}`);
+            console.log(`size : ${file.length}`);
             this.notifySessionReady(sessionId, (custom) ? {title: file.name, size: file.length} : false);
         });
     }
