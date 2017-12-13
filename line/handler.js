@@ -241,10 +241,7 @@ We will notify you once the movie is ready`));
                 qs.stringify({
                   keyword: 'watchlink',
                   movie: torr.url,
-                  image: movie.large_cover_image,
-                  title: movie.title,
                   qty: torr.quality,
-                  imdb: movie.imdb_code,
                   size: torr.size_bytes,
                 })
               );
@@ -283,7 +280,19 @@ We will notify you once the movie is ready`));
         break;
       
         case 'watchlink':
-        this.processTorrent(replyToken, source, parsedData);
+        this.ytsClient.getMovie(parsedData.movieId)
+          .then(result => {
+            const movie = result.movie;
+            const movieData = {
+              movie: parsedData.url,
+              image: movie.large_cover_image,
+              title: movie.title,
+              qty: parsedData.quality,
+              imdb: movie.imdb_code,
+              size: parsedData.size_bytes,
+            };
+            this.processTorrent(replyToken, source, movieData);
+          });
         break;
       default:
         break;
