@@ -181,6 +181,7 @@ Happy watching!`
   }
 
   processTorrent(replyToken, source, params) {
+    console.log(params);
     const contentString = (params.custom) ? 'your torrent' : `${params.title} (${params.qty})`;
     this.firebaseClient.addWatchSession(source.userId, params)
     .then(result => {
