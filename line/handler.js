@@ -161,32 +161,13 @@ Happy watching!`
           .catch(handleError);
         break;
       case 'link':
-          this.firebaseClient.addWatchSession(source.userId, {
+          this.processTorrent(replyToken, source, {
             movie: term,
             image: '',
             title: term,
             qty: '',
             custom: true
-          })
-          .then(result => {
-            const unsubscribe = this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
-            .onSnapshot(doc => {
-              if (doc.data().status === 'ready') {
-                const sessionData = doc.data();
-                unsubscribe();
-                const searchTerm = (doc.data().custom) ? {filesize: doc.data().size, filename: doc.data().title} : {
-                  imdbid: parsedData.imdb,
-                  filesize: parsedData.size
-                }
-                this.osClient.getSubsLink(result.id, searchTerm).then(() => {
-                  this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch your torrent here
-${result.url}`))
-                });
-              };
-            });
           });
-          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing your torrent watch link...
-We will notify you once the movie is ready`));
           break;
       default:
         console.log(`unknown keyword ${keyword}`);
@@ -197,6 +178,40 @@ We will notify you once the movie is ready`));
   handlePostbackEvent(event) {
     const postbackData = event.postback.data;
     this.handlePostback(event.replyToken, event.source, postbackData);
+  }
+
+  processTorrent(replyToken, source, params) {
+    this.firebaseClient.addWatchSession(source.userId, params)
+    .then(result => {
+      const unsubscribe = this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
+      .onSnapshot(doc => {
+        if (doc.data().status === 'ready') {
+          const contentString = (params.custom) ? 'your torrent' : `${params.title} (${params.qty})`;
+          const sessionData = doc.data();
+          unsubscribe();
+          let osParams = {};
+          if (params.custom) {
+            osParams = Object.assign(osParams,
+              {
+                filesize: doc.data().size,
+                filename: doc.data().title
+              }
+            );
+          } else {
+            osParams = Object.assign(osParams, {
+              imdbid: params.imdb,
+              filesize: params.size
+            })
+          }
+          this.osClient.getSubsLink(result.id, osParams).then(() => {
+            this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${contentString} here
+${result.url}`))
+          });
+        };
+      });
+    });
+    this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${contentString}...
+We will notify you once the movie is ready`));
   }
 
   handlePostback(replyToken, source, data) {
@@ -268,25 +283,7 @@ We will notify you once the movie is ready`));
         break;
       
         case 'watchlink':
-        this.firebaseClient.addWatchSession(source.userId, parsedData)
-          .then(result => {
-            const unsubscribe = this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
-            .onSnapshot(doc => {
-              if (doc.data().status === 'ready') {
-                const sessionData = doc.data();
-                unsubscribe();
-                this.osClient.getSubsLink(result.id, {
-                  imdbid: parsedData.imdb,
-                  filesize: parsedData.size
-                }).then(() => {
-                  this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${parsedData.title} (${parsedData.qty}) here
-${result.url}`))
-                });
-              };
-            });
-          });
-          this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${parsedData.title} (${parsedData.qty})...
-We will notify you once the movie is ready`));
+        this.processTorrent(replyToken, source, parsedData);
         break;
       default:
         break;
