@@ -6,13 +6,9 @@ const admin = require("firebase-admin");
 const firestore = admin.firestore();
 const _ = require('lodash');
 
-const webtorrent = new Webtorrent({
-  maxConns: 100,
-});
+const webtorrent = new Webtorrent();
 const listTorrent = {}
-const torrentOptions = {
-  maxWebConns: 10,
-}
+const torrentOptions = {}
 
 // From https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent
 function encodeRFC5987 (str) {
@@ -72,7 +68,7 @@ class Torrent {
         return this.notifySessionReady(sessionId);
       }
       console.log(`adding ${torrentFile}`);
-      webtorrent.add(torrentFile, torrentOptions, (torrent) => {
+      webtorrent.add(torrentFile, (torrent) => {
             console.log(`Torrent for ${sessionId} is available`);
             const date = new Date();
             listTorrent[torrentFile] = {
