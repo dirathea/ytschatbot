@@ -286,12 +286,12 @@ We will notify you once the movie is ready`));
           .then(result => {
             const movie = result.movie;
             const movieData = {
-              movie: parsedData.url,
+              movie: parsedData.movie,
               image: movie.large_cover_image,
               title: movie.title,
-              qty: parsedData.quality,
+              qty: parsedData.qty,
               imdb: movie.imdb_code,
-              size: parsedData.size_bytes,
+              size: parsedData.size,
             };
             this.processTorrent(replyToken, source, movieData);
           });
