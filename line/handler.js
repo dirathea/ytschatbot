@@ -194,7 +194,6 @@ Happy watching!`
           if (params.custom) {
             osParams = Object.assign(osParams,
               {
-                filesize: doc.data().size,
                 filename: doc.data().title
               }
             );
