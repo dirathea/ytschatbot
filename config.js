@@ -8,5 +8,6 @@ module.exports = {
     FIREBASE_DATABASE_URL: process.env.FIREBASE_DATABASE_URL,
     FIREBASE_STORAGE_BUCKET: process.env.FIREBASE_STORAGE_BUCKET,
     BASE_URL: process.env.BASE_URL,
-    OS_USER_AGENT: process.env.OS_USER_AGENT || 'TemporaryUserAgent'
+    OS_USER_AGENT: process.env.OS_USER_AGENT || 'TemporaryUserAgent',
+    SERIES_BASE_URL: process.env.SERIES_BASE_URL || 'https://oneom.tk/'
 }

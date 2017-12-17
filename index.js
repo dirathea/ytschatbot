@@ -14,6 +14,7 @@ const LineHandler = require('./line/handler');
 const FirebaseClient = require('./firebase_client');
 const Torrent = require('./torrent/Torrent');
 const OSClient = require('./opensubs_client');
+const SeriesClient = require('./oneom_client/oneom_client');
 
 const torrentClient = new Torrent();
 const osClient = new OSClient();
@@ -24,10 +25,18 @@ const lineConfig = {
   channelSecret: config.LINE_CHANNEL_SECRET,
 };
 
-const client = new LineClient(lineConfig);
+const lineClient = new LineClient(lineConfig);
 const ystClient = new YTSClient(config.YTS_BASE_URL);
 const firebaseClient = new FirebaseClient();
-const handler = new LineHandler(client, ystClient, firebaseClient, osClient);
+const serialClient = new SeriesClient(config.SERIES_BASE_URL);
+const handler = new LineHandler(
+  {
+    lineClient,
+    ystClient,
+    firebaseClient,
+    osClient,
+    serialClient
+  });
 
 app.use(express.static(path.resolve(__dirname, 'homepage', 'build')));
 
@@ -65,14 +74,3 @@ app.get('*', (req, res) => {
 app.listen(process.env.PORT || 8080, () => {
   console.log('Bot is up!');
 });
-
-https
-  .createServer(
-    {
-      cert: fs.readFileSync('certificate.crt'),
-      ca: fs.readFileSync('ca_bundle.crt'),
-      key: fs.readFileSync('private.key'),
-    },
-    app
-  )
-  .listen(process.env.PORT_HTTPS || 443);

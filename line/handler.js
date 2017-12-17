@@ -22,11 +22,12 @@ Duration : {{duration}} minutes
 {{mpa_rating}}`;
 
 class Handler {
-  constructor(lineClient, ytsClient, firebaseClient, osClient) {
-    this.lineClient = lineClient;
-    this.ytsClient = ytsClient;
-    this.firebaseClient = firebaseClient;
-    this.osClient = osClient;
+  constructor(clients) {
+    this.lineClient = clients.lineClient;
+    this.ytsClient = clients.ytsClient;
+    this.firebaseClient = clients.firebaseClient;
+    this.osClient = clients.osClient;
+    this.serialClient = clients.serialClient;
   }
 
   handleRequest(payload) {
@@ -169,10 +170,58 @@ Happy watching!`
             custom: true
           });
           break;
+      case 'series':
+        this.serialClient.searchSeries(term)
+          .then(result => {
+            return this.sendSeriesList(replyToken, result);
+          });
+        break;
       default:
         console.log(`unknown keyword ${keyword}`);
         break;
     }
+  }
+
+  sendSeriesList(replyToken, result) {
+    const seriesList = result.serials.map(serial => {
+      const actionDetails = messages.actionPostbackTemplate('Details', qs.stringify({keyword: 'series-detail', id: result.id}));
+      const actionSubscribe = messages.actionPostbackTemplate('Subscribe', qs.stringify({keyword: 'series-subscribe', id: serial.id}));
+      const schedule = (serial.airday && serial.airtime) ? `every ${serial.airday} on ${serial.airtime}` : 'Ended';
+      
+      const mainText = `${serial.start} - ${serial.end}\n${schedule}`;
+
+      const mainImage = (serial.poster_id) ? serial.poster.name : 'https://yts.am/assets/images/website/logo-YTS.svg';
+
+      const backgroundPalettePromise = Vibrant.from(mainImage)
+        .getPalette()
+        .then(palette => {
+          return Promise.resolve(palette.Vibrant.getHex());
+        })
+        .catch(err => {
+          return Promise.resolve();
+        });
+        return backgroundPalettePromise
+          .then(background => {
+            return messages.carouselColumnTemplate(
+              mainImage,
+              _.truncate(serial.title, { length: 35, separator: /\W/}),
+              _.truncate(mainText, { length: 50, separator: /\W/ }),
+              actions,
+              background
+            );
+          });
+    });
+
+    return Promise.all(seriesList)
+      .then(carouselColumns => {
+        console.log(JSON.stringify(carouselColumns));
+        const message = messages.templateMessage(
+          `Search result`,
+          messages.carouselTemplate(carouselColumns, 'rectangle', 'contain')
+        );
+        return this.lineClient.replyMessage(replyToken, message).catch(handleError);
+      });
+
   }
 
   handlePostbackEvent(event) {
