@@ -431,10 +431,11 @@ Happy watching!`;
             })
           );
         });
+        const title = `Season : ${currentEpi.season}\nEpisode: ${currentEpi.ep}\n${currentEpi.title}`;
         const episodeButton = messages.carouselColumnTemplate(
           undefined,
           undefined,
-          _.truncate(currentEpi.title, { length: 18, separator: /\W/ }),
+          title,
           actions
         );
         latestEpisode.push(episodeButton);
