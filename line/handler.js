@@ -381,7 +381,7 @@ Happy watching!`;
         break;
       case 'series-watch-link':
         this.serialClient.seriesDetails(parsedData.id).then(result => {
-          const series = result.series;
+          const series = result.serial;
           const movieData = {
             movie: parsedData.url,
             size: parsedData.size,
