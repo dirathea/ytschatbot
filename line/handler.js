@@ -186,6 +186,7 @@ Happy watching!`
     const seriesList = result.serials.map(serial => {
       const actionDetails = messages.actionPostbackTemplate('Details', qs.stringify({keyword: 'series-detail', id: result.id}));
       const actionSubscribe = messages.actionPostbackTemplate('Subscribe', qs.stringify({keyword: 'series-subscribe', id: serial.id}));
+      const actions = [actionDetails, actionSubscribe];
       const schedule = (serial.airday && serial.airtime) ? `every ${serial.airday} on ${serial.airtime}` : 'Ended';
       
       const mainText = `${serial.start} - ${serial.end}\n${schedule}`;
