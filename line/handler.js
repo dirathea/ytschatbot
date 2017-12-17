@@ -183,34 +183,39 @@ Happy watching!`
   }
 
   sendSeriesList(replyToken, result) {
-    const seriesList = result.serials.map(serial => {
-      const actionDetails = messages.actionPostbackTemplate('Details', qs.stringify({keyword: 'series-detail', id: result.id}));
-      const actionSubscribe = messages.actionPostbackTemplate('Subscribe', qs.stringify({keyword: 'series-subscribe', id: serial.id}));
-      const actions = [actionDetails, actionSubscribe];
-      const schedule = (serial.airday && serial.airtime) ? `every ${serial.airday} on ${serial.airtime}` : 'Ended';
-      
-      const mainText = `${serial.start} - ${serial.end}\n${schedule}`;
+    const seriesList = _.slice(
+        _.orderBy(
+          result.serials,
+          ['imdb_rating', 'start'],
+          ['desc', 'desc']), 0, 10)
+        .map(serial => {
+          const actionDetails = messages.actionPostbackTemplate('Details', qs.stringify({keyword: 'series-detail', id: result.id}));
+          const actionSubscribe = messages.actionPostbackTemplate('Subscribe', qs.stringify({keyword: 'series-subscribe', id: serial.id}));
+          const actions = [actionDetails, actionSubscribe];
+          const schedule = (serial.airday && serial.airtime) ? `every ${serial.airday} on ${serial.airtime}` : 'Ended';
+          
+          const mainText = `${serial.start} - ${serial.end}\n${schedule}`;
 
-      const mainImage = (serial.poster_id) ? this.serialClient.getImageUrl(serial.poster.name) : 'https://picsum.photos/1024/?blur';
+          const mainImage = (serial.poster_id) ? this.serialClient.getImageUrl(serial.poster.name) : 'https://picsum.photos/1024/?blur';
 
-      const backgroundPalettePromise = Vibrant.from(mainImage)
-        .getPalette()
-        .then(palette => {
-          return Promise.resolve(palette.Vibrant.getHex());
-        })
-        .catch(err => {
-          return Promise.resolve();
-        });
-        return backgroundPalettePromise
-          .then(background => {
-            return messages.carouselColumnTemplate(
-              mainImage,
-              _.truncate(serial.title, { length: 35, separator: /\W/}),
-              _.truncate(mainText, { length: 50, separator: /\W/ }),
-              actions,
-              background
-            );
-          });
+          const backgroundPalettePromise = Vibrant.from(mainImage)
+            .getPalette()
+            .then(palette => {
+              return Promise.resolve(palette.Vibrant.getHex());
+            })
+            .catch(err => {
+              return Promise.resolve();
+            });
+            return backgroundPalettePromise
+              .then(background => {
+                return messages.carouselColumnTemplate(
+                  mainImage,
+                  _.truncate(serial.title, { length: 35, separator: /\W/}),
+                  _.truncate(mainText, { length: 50, separator: /\W/ }),
+                  actions,
+                  background
+                );
+              });
     });
 
     return Promise.all(seriesList)
