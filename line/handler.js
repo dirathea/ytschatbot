@@ -267,6 +267,7 @@ Happy watching!`;
             let osParams = {
               episode: params.episode,
               season: params.season,
+              filename: params.filename
             };
             if (params.custom) {
               osParams = Object.assign(osParams, {
@@ -388,7 +389,7 @@ Happy watching!`;
           const movieData = {
             movie: parsedData.url,
             size: parsedData.size,
-            title: series.title,
+            title: `${series.title} S${parsedData.season}·E${parsedData.ep}`,
             season: parsedData.season,
             episode: parsedData.ep,
             image: series.poster_id
