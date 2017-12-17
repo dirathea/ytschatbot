@@ -374,7 +374,7 @@ Happy watching!`;
         break;
       case 'series-detail':
         this.serialClient.seriesDetails(parsedData.id).then(result =>
-          this.sendSeriesDetails(replyToken, result)
+          this.sendSeriesDetails(replyToken, result.serial)
         );
         break;
       default:
@@ -383,7 +383,6 @@ Happy watching!`;
   }
 
   sendSeriesDetails(replyToken, series) {
-    console.log(series.description);
     const seriesDetailMessages = [];
     if (series.poster_id) {
       seriesDetailMessages.push(
