@@ -392,6 +392,7 @@ Happy watching!`;
             title: `${series.title} S${parsedData.season}·E${parsedData.ep}`,
             season: parsedData.season,
             episode: parsedData.ep,
+            imdb: series.imdb_id.split('/').pop(),
             image: series.poster_id
               ? this.serialClient.getImageUrl(series.poster.name)
               : DEFAULT_IMAGE,
