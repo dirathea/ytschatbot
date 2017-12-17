@@ -439,7 +439,10 @@ Happy watching!`;
       }
       episodeIndex--;
     }
-    const episodeCarrousel = messages.carouselTemplate(latestEpisode, 'rectangle', 'contain');
+    const episodeCarrousel = messages.templateMessage(
+      `Search result`,
+      messages.carouselTemplate(latestEpisode, 'rectangle', 'contain')
+    );
     seriesDetailMessages.push(episodeCarrousel);
     this.lineClient.replyMessage(replyToken, seriesDetailMessages).catch(handleError);
   }
