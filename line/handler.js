@@ -11,6 +11,8 @@ const handleError = err => {
   console.error(JSON.stringify(err.originalError.response.data));
 };
 
+const DEFAULT_IMAGE = 'https://yts.am/assets/images/website/logo-YTS.svg';
+
 const MOVIE_DETAIL_TEMPLATE = `{{title_long}}
 Casts : {{casts}}
 Rating : {{rating}}
@@ -211,7 +213,7 @@ Happy watching!`;
 
       const mainImage = serial.poster_id
         ? this.serialClient.getImageUrl(serial.poster.name)
-        : 'https://yts.am/assets/images/website/logo-YTS.svg';
+        : DEFAULT_IMAGE;
 
       const backgroundPalettePromise = Vibrant.from(mainImage)
         .getPalette()
@@ -373,9 +375,25 @@ Happy watching!`;
         });
         break;
       case 'series-detail':
-        this.serialClient.seriesDetails(parsedData.id).then(result =>
-          this.sendSeriesDetails(replyToken, result.serial)
-        );
+        this.serialClient
+          .seriesDetails(parsedData.id)
+          .then(result => this.sendSeriesDetails(replyToken, result.serial));
+        break;
+      case 'series-watch-link':
+        this.serialClient.seriesDetails(parsedData.id).then(result => {
+          const series = result.series;
+          const movieData = {
+            movie: parsedData.url,
+            size: parsedData.size,
+            title: series.title,
+            season: parsedData.season,
+            episode: parsedData.ep,
+            image: series.poster_id
+              ? this.serialClient.getImageUrl(series.poster.name)
+              : DEFAULT_IMAGE,
+          };
+          this.processTorrent(replyToken, source, movieData);
+        });
         break;
       default:
         break;
@@ -402,7 +420,7 @@ Happy watching!`;
       textDetails.push(`Network : ${allNetwork}`);
     }
     if (series.description.length > 0) {
-      textDetails.push('',stripTags(series.description[0].body));
+      textDetails.push('', stripTags(series.description[0].body));
     }
     seriesDetailMessages.push(messages.textMessage(textDetails.join('\n')));
     const latestEpisode = [];
@@ -413,14 +431,14 @@ Happy watching!`;
         const quality = {};
         _.orderBy(currentEpi.torrent, ['seed']).forEach(torr => {
           if (!quality[torr.quality.name]) {
-            quality[torr.quality.name] = {url : torr.value, size: torr.size};
+            quality[torr.quality.name] = { url: torr.value, size: torr.size };
           }
         });
         const actions = _.slice(Object.keys(quality), 0, 3).map(qty => {
           const parsedMagnet = magnetUri.decode(quality[qty].url);
           const trimmedUrlObject = Object.assign(parsedMagnet, {
             announce: [],
-            tr: []
+            tr: [],
           });
           return messages.actionPostbackTemplate(
             `Watch in ${qty}`,
@@ -428,7 +446,9 @@ Happy watching!`;
               keyword: 'series-watch-link',
               id: series.id,
               url: magnetUri.encode(trimmedUrlObject),
-              size: quality[qty].size
+              size: quality[qty].size,
+              season: currentEpi.season,
+              ep: currentEpi.ep,
             })
           );
         });
@@ -447,7 +467,9 @@ Happy watching!`;
       messages.carouselTemplate(latestEpisode, 'rectangle', 'contain')
     );
     seriesDetailMessages.push(episodeCarrousel);
-    this.lineClient.replyMessage(replyToken, seriesDetailMessages).catch(handleError);
+    this.lineClient
+      .replyMessage(replyToken, seriesDetailMessages)
+      .catch(handleError);
   }
 }
 
