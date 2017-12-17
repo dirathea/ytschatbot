@@ -9,6 +9,10 @@ class oneomClient {
         return this._get(`/search/serial?title=${title.toLowerCase()}`);
     }
 
+    seriesDetails(id) {
+        return this._get(`/serial/${id}`);
+    }
+
     getImageUrl(imageName){
         return `https://fileom.s3.amazonaws.com/serial/max/${imageName}`;
     }

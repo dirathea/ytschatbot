@@ -1,7 +1,9 @@
 const _ = require('lodash');
 const qs = require('query-string');
 const mustache = require('mustache');
-const Vibrant = require('node-vibrant')
+const Vibrant = require('node-vibrant');
+const stripTags = require('striptags');
+const magnetUri = require('magnet-uri');
 
 const messages = require('./messages');
 
@@ -58,15 +60,19 @@ class Handler {
   }
 
   handleFollowEvent(event) {
-    this.lineClient.getProfile(event.source.userId)
-      .then(profile=> {
-        this.firebaseClient.addUser(profile);
-        const greetingMessage = `Hello ${profile.displayName}! My name is YTS Bot. Chat bot to help you search and stream HD movies directly on your chat app.
+    this.lineClient.getProfile(event.source.userId).then(profile => {
+      this.firebaseClient.addUser(profile);
+      const greetingMessage = `Hello ${
+        profile.displayName
+      }! My name is YTS Bot. Chat bot to help you search and stream HD movies directly on your chat app.
 Try typing "search <your movie title>" to getting started.
 
-Happy watching!`
-        this.lineClient.replyMessage(event.replyToken, messages.textMessage(greetingMessage));
-      });
+Happy watching!`;
+      this.lineClient.replyMessage(
+        event.replyToken,
+        messages.textMessage(greetingMessage)
+      );
+    });
   }
 
   handleMessageEvent(event) {
@@ -115,7 +121,7 @@ Happy watching!`
             keyword: 'suggestion',
             data: movie.id,
           })
-        )
+        ),
       ];
       const backgroundPalettePromise = Vibrant.from(movie.large_cover_image)
         .getPalette()
@@ -125,27 +131,27 @@ Happy watching!`
         .catch(err => {
           return Promise.resolve();
         });
-        return backgroundPalettePromise
-          .then(background => {
-            return messages.carouselColumnTemplate(
-              movie.large_cover_image,
-              _.truncate(movie.title, { length: 35, separator: /\W/}),
-              _.truncate(movie.summary, { length: 50, separator: /\W/ }),
-              actions,
-              background
-            );
-          });
+      return backgroundPalettePromise.then(background => {
+        return messages.carouselColumnTemplate(
+          movie.large_cover_image,
+          _.truncate(movie.title, { length: 35, separator: /\W/ }),
+          _.truncate(movie.summary, { length: 50, separator: /\W/ }),
+          actions,
+          background
+        );
+      });
     });
 
-    return Promise.all(carouselMessage)
-      .then(carouselColumns => {
-        console.log(JSON.stringify(carouselColumns));
-        const message = messages.templateMessage(
-          `Search result`,
-          messages.carouselTemplate(carouselColumns, 'rectangle', 'contain')
-        );
-        return this.lineClient.replyMessage(replyToken, message).catch(handleError);
-      });
+    return Promise.all(carouselMessage).then(carouselColumns => {
+      console.log(JSON.stringify(carouselColumns));
+      const message = messages.templateMessage(
+        `Search result`,
+        messages.carouselTemplate(carouselColumns, 'rectangle', 'contain')
+      );
+      return this.lineClient
+        .replyMessage(replyToken, message)
+        .catch(handleError);
+    });
   }
 
   handleTextMessage(replyToken, source, text) {
@@ -162,19 +168,18 @@ Happy watching!`
           .catch(handleError);
         break;
       case 'link':
-          this.processTorrent(replyToken, source, {
-            movie: term,
-            image: '',
-            title: term,
-            qty: '',
-            custom: true
-          });
-          break;
+        this.processTorrent(replyToken, source, {
+          movie: term,
+          image: '',
+          title: term,
+          qty: '',
+          custom: true,
+        });
+        break;
       case 'series':
-        this.serialClient.searchSeries(term)
-          .then(result => {
-            return this.sendSeriesList(replyToken, result);
-          });
+        this.serialClient.searchSeries(term).then(result => {
+          return this.sendSeriesList(replyToken, result);
+        });
         break;
       default:
         console.log(`unknown keyword ${keyword}`);
@@ -184,50 +189,59 @@ Happy watching!`
 
   sendSeriesList(replyToken, result) {
     const seriesList = _.slice(
-        _.orderBy(
-          result.serials,
-          ['imdb_rating'],
-          ['desc']), 0, 10)
-        .map(serial => {
-          const actionDetails = messages.actionPostbackTemplate('Details', qs.stringify({keyword: 'series-detail', id: result.id}));
-          const actionSubscribe = messages.actionPostbackTemplate('Subscribe', qs.stringify({keyword: 'series-subscribe', id: serial.id}));
-          const actions = [actionDetails, actionSubscribe];
-          const schedule = (serial.airday && serial.airtime) ? `every ${serial.airday} on ${serial.airtime}` : 'Ended';
-          
-          const mainText = `${serial.start} - ${serial.end}\n${schedule}`;
+      _.orderBy(result.serials, ['imdb_rating'], ['desc']),
+      0,
+      10
+    ).map(serial => {
+      const actionDetails = messages.actionPostbackTemplate(
+        'Details',
+        qs.stringify({ keyword: 'series-detail', id: result.id })
+      );
+      const actionSubscribe = messages.actionPostbackTemplate(
+        'Subscribe',
+        qs.stringify({ keyword: 'series-subscribe', id: serial.id })
+      );
+      const actions = [actionDetails, actionSubscribe];
+      const schedule =
+        serial.airday && serial.airtime
+          ? `every ${serial.airday} on ${serial.airtime}`
+          : 'Ended';
 
-          const mainImage = (serial.poster_id) ? this.serialClient.getImageUrl(serial.poster.name) : 'https://yts.am/assets/images/website/logo-YTS.svg';
+      const mainText = `${serial.start} - ${serial.end}\n${schedule}`;
 
-          const backgroundPalettePromise = Vibrant.from(mainImage)
-            .getPalette()
-            .then(palette => {
-              return Promise.resolve(palette.Vibrant.getHex());
-            })
-            .catch(err => {
-              return Promise.resolve();
-            });
-            return backgroundPalettePromise
-              .then(background => {
-                return messages.carouselColumnTemplate(
-                  mainImage,
-                  _.truncate(serial.title, { length: 35, separator: /\W/}),
-                  _.truncate(mainText, { length: 50, separator: /\W/ }),
-                  actions,
-                  background
-                );
-              });
+      const mainImage = serial.poster_id
+        ? this.serialClient.getImageUrl(serial.poster.name)
+        : 'https://yts.am/assets/images/website/logo-YTS.svg';
+
+      const backgroundPalettePromise = Vibrant.from(mainImage)
+        .getPalette()
+        .then(palette => {
+          return Promise.resolve(palette.Vibrant.getHex());
+        })
+        .catch(err => {
+          return Promise.resolve();
+        });
+      return backgroundPalettePromise.then(background => {
+        return messages.carouselColumnTemplate(
+          mainImage,
+          _.truncate(serial.title, { length: 35, separator: /\W/ }),
+          _.truncate(mainText, { length: 50, separator: /\W/ }),
+          actions,
+          background
+        );
+      });
     });
 
-    return Promise.all(seriesList)
-      .then(carouselColumns => {
-        console.log(JSON.stringify(carouselColumns));
-        const message = messages.templateMessage(
-          `Search result`,
-          messages.carouselTemplate(carouselColumns, 'rectangle', 'contain')
-        );
-        return this.lineClient.replyMessage(replyToken, message).catch(handleError);
-      });
-
+    return Promise.all(seriesList).then(carouselColumns => {
+      console.log(JSON.stringify(carouselColumns));
+      const message = messages.templateMessage(
+        `Search result`,
+        messages.carouselTemplate(carouselColumns, 'rectangle', 'contain')
+      );
+      return this.lineClient
+        .replyMessage(replyToken, message)
+        .catch(handleError);
+    });
   }
 
   handlePostbackEvent(event) {
@@ -237,36 +251,45 @@ Happy watching!`
 
   processTorrent(replyToken, source, params) {
     console.log(params);
-    const contentString = (params.custom) ? 'your torrent' : `${params.title} (${params.qty})`;
-    this.firebaseClient.addWatchSession(source.userId, params)
-    .then(result => {
-      const unsubscribe = this.firebaseClient.getFirestore().doc(`/session/${result.id}`)
-      .onSnapshot(doc => {
-        if (doc.data().status === 'ready') {
-          const sessionData = doc.data();
-          unsubscribe();
-          let osParams = {};
-          if (params.custom) {
-            osParams = Object.assign(osParams,
-              {
-                filename: doc.data().title
-              }
-            );
-          } else {
-            osParams = Object.assign(osParams, {
-              imdbid: params.imdb,
-              filesize: params.size
-            })
+    const contentString = params.custom
+      ? 'your torrent'
+      : `${params.title} (${params.qty})`;
+    this.firebaseClient.addWatchSession(source.userId, params).then(result => {
+      const unsubscribe = this.firebaseClient
+        .getFirestore()
+        .doc(`/session/${result.id}`)
+        .onSnapshot(doc => {
+          if (doc.data().status === 'ready') {
+            const sessionData = doc.data();
+            unsubscribe();
+            let osParams = {};
+            if (params.custom) {
+              osParams = Object.assign(osParams, {
+                filename: doc.data().title,
+              });
+            } else {
+              osParams = Object.assign(osParams, {
+                imdbid: params.imdb,
+                filesize: params.size,
+              });
+            }
+            this.osClient.getSubsLink(result.id, osParams).then(() => {
+              this.lineClient.pushMessage(
+                sessionData.userId,
+                messages.textMessage(
+                  `Watch ${contentString} here\n${result.url}`
+                )
+              );
+            });
           }
-          this.osClient.getSubsLink(result.id, osParams).then(() => {
-            this.lineClient.pushMessage(sessionData.userId, messages.textMessage(`Watch ${contentString} here
-${result.url}`))
-          });
-        };
-      });
+        });
     });
-    this.lineClient.replyMessage(replyToken, messages.textMessage(`Preparing ${contentString}...
-We will notify you once the movie is ready`));
+    this.lineClient.replyMessage(
+      replyToken,
+      messages.textMessage(
+        `Preparing ${contentString}...\nWe will notify you once the movie is ready`
+      )
+    );
   }
 
   handlePostback(replyToken, source, data) {
@@ -287,7 +310,7 @@ We will notify you once the movie is ready`));
                 casts: (movie.cast || []).map(cast => cast.name).join(', '),
                 rating: movie.rating,
                 description_full: movie.description_full,
-                genre: (movie.genres || []).join(', ')
+                genre: (movie.genres || []).join(', '),
               })
             );
             const watchActions = movie.torrents.slice(0, 3).map(torr => {
@@ -334,25 +357,90 @@ We will notify you once the movie is ready`));
           return this.sendMovieList(replyToken, result);
         });
         break;
-      
-        case 'watchlink':
-        this.ytsClient.getMovie(parsedData.movieId)
-          .then(result => {
-            const movie = result.movie;
-            const movieData = {
-              movie: parsedData.movie,
-              image: movie.large_cover_image,
-              title: movie.title,
-              qty: parsedData.qty,
-              imdb: movie.imdb_code,
-              size: parsedData.size,
-            };
-            this.processTorrent(replyToken, source, movieData);
-          });
+
+      case 'watchlink':
+        this.ytsClient.getMovie(parsedData.movieId).then(result => {
+          const movie = result.movie;
+          const movieData = {
+            movie: parsedData.movie,
+            image: movie.large_cover_image,
+            title: movie.title,
+            qty: parsedData.qty,
+            imdb: movie.imdb_code,
+            size: parsedData.size,
+          };
+          this.processTorrent(replyToken, source, movieData);
+        });
+        break;
+      case 'series-detail':
+        this.serialClient(parsedData.id).then(result =>
+          this.sendSeriesDetails(replyToken, result)
+        );
         break;
       default:
         break;
     }
+  }
+
+  sendSeriesDetails(replyToken, series) {
+    const seriesDetailMessages = [];
+    if (series.poster_id) {
+      seriesDetailMessages.push(
+        messages.imageMessage(
+          this.serialClient.getImageUrl(series.poster.name),
+          this.serialClient.getImageUrl(series.poster.name)
+        )
+      );
+    }
+    const textDetails = [];
+    if (series.genre) {
+      const allGenre = series.genre.map(genre => genre.name).join(', ');
+      textDetails.push(`Genre : ${allGenre}`);
+    }
+    if (series.network) {
+      const allNetwork = series.network.map(network => network.name).join(', ');
+      textDetails.push(`Network : ${allNetwork}`);
+    }
+    textDetails.push(striptags(series.description.body));
+    seriesDetailMessages.push(messages.textMessage(textDetails.join('\n')));
+    const latestEpisode = [];
+    let episodeIndex = series.ep.length - 1;
+    while (latestEpisode.length < 10) {
+      const currentEpi = series.ep[episodeIndex];
+      if (currentEpi.torrent.length > 0) {
+        const quality = {};
+        _.orderBy(currentEpi.torrent, ['seed']).forEach(torr => {
+          if (!quality[torr.quality.name]) {
+            quality[torr.quality.name] = torr.value;
+          }
+        });
+        const actions = _.slice(Object.keys(quality), 0, 4).map(qty => {
+          const parsedMagnet = magnetUri.decode(quality[qty]);
+          const trimmedUrlObject = Object.assign(parsedMagnet, {
+            tr: _.slice(parsedMagnet.tr, 0, 3),
+          });
+          return messages.actionPostbackTemplate(
+            `Watch in ${qty} format`,
+            qs.stringify({
+              keyword: 'series-watch-link',
+              url: magnetUri.encode(trimmedUrlObject),
+            })
+          );
+        });
+        const episodeButton = messages.carouselColumnTemplate(
+          undefined,
+          undefined,
+          currentEpi.title,
+          actions
+        );
+        latestEpisode.push(episodeButton);
+      }
+      episodeIndex--;
+    }
+    const episodeCarrousel = messages.carouselTemplate(latestEpisode);
+    seriesDetailMessages.push(episodeIndex);
+
+    this.lineClient.replyMessage(replyToken, seriesDetailMessages);
   }
 }
 
