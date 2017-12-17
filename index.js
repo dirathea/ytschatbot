@@ -69,9 +69,9 @@ app.listen(process.env.PORT || 8080, () => {
 https
   .createServer(
     {
-      cert: fs.readSync('certificate.crt'),
-      ca: fs.readSync('ca_bundle.crt'),
-      key: fs.readSync('private.key'),
+      cert: fs.readFileSync('certificate.crt'),
+      ca: fs.readFileSync('ca_bundle.crt'),
+      key: fs.readFileSync('private.key'),
     },
     app
   )
