@@ -186,8 +186,8 @@ Happy watching!`
     const seriesList = _.slice(
         _.orderBy(
           result.serials,
-          ['imdb_rating', 'start'],
-          ['desc', 'desc']), 0, 10)
+          ['imdb_rating'],
+          ['desc']), 0, 10)
         .map(serial => {
           const actionDetails = messages.actionPostbackTemplate('Details', qs.stringify({keyword: 'series-detail', id: result.id}));
           const actionSubscribe = messages.actionPostbackTemplate('Subscribe', qs.stringify({keyword: 'series-subscribe', id: serial.id}));
@@ -196,7 +196,7 @@ Happy watching!`
           
           const mainText = `${serial.start} - ${serial.end}\n${schedule}`;
 
-          const mainImage = (serial.poster_id) ? this.serialClient.getImageUrl(serial.poster.name) : 'https://picsum.photos/1024/?blur';
+          const mainImage = (serial.poster_id) ? this.serialClient.getImageUrl(serial.poster.name) : 'https://yts.am/assets/images/website/logo-YTS.svg';
 
           const backgroundPalettePromise = Vibrant.from(mainImage)
             .getPalette()
