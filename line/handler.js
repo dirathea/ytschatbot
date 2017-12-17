@@ -264,7 +264,10 @@ Happy watching!`;
           if (doc.data().status === 'ready') {
             const sessionData = doc.data();
             unsubscribe();
-            let osParams = {};
+            let osParams = {
+              episode: params.episode,
+              season: params.season,
+            };
             if (params.custom) {
               osParams = Object.assign(osParams, {
                 filename: doc.data().title,
@@ -391,6 +394,7 @@ Happy watching!`;
             image: series.poster_id
               ? this.serialClient.getImageUrl(series.poster.name)
               : DEFAULT_IMAGE,
+              qty: parsedData.qty
           };
           this.processTorrent(replyToken, source, movieData);
         });
@@ -449,6 +453,7 @@ Happy watching!`;
               size: quality[qty].size,
               season: currentEpi.season,
               ep: currentEpi.ep,
+              qty
             })
           );
         });
