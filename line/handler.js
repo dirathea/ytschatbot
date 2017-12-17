@@ -383,7 +383,6 @@ Happy watching!`;
   }
 
   sendSeriesDetails(replyToken, series) {
-    console.log(series);
     const seriesDetailMessages = [];
     if (series.poster_id) {
       seriesDetailMessages.push(
@@ -443,7 +442,7 @@ Happy watching!`;
     const episodeCarrousel = messages.carouselTemplate(latestEpisode);
     seriesDetailMessages.push(episodeIndex);
 
-    this.lineClient.replyMessage(replyToken, seriesDetailMessages);
+    this.lineClient.replyMessage(replyToken, seriesDetailMessages).catch(handleError);
   }
 }
 
