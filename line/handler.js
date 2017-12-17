@@ -401,9 +401,8 @@ Happy watching!`;
       const allNetwork = series.network.map(network => network.name).join(', ');
       textDetails.push(`Network : ${allNetwork}`);
     }
-    console.log(series.description);
-    if (series.description) {
-      textDetails.push(stripTags(series.description.body));
+    if (series.description.length > 0) {
+      textDetails.push(stripTags(series.description[0].body));
     }
     seriesDetailMessages.push(messages.textMessage(textDetails.join('\n')));
     const latestEpisode = [];
@@ -423,7 +422,6 @@ Happy watching!`;
             announce: [],
             tr: []
           });
-          console.log(trimmedUrlObject);
           return messages.actionPostbackTemplate(
             `Watch in ${qty}`,
             qs.stringify({
