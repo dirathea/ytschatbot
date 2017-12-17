@@ -401,7 +401,7 @@ Happy watching!`;
       const allNetwork = series.network.map(network => network.name).join(', ');
       textDetails.push(`Network : ${allNetwork}`);
     }
-    textDetails.push(striptags(series.description.body));
+    textDetails.push(stripTags(series.description.body));
     seriesDetailMessages.push(messages.textMessage(textDetails.join('\n')));
     const latestEpisode = [];
     let episodeIndex = series.ep.length - 1;
