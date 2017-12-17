@@ -64,12 +64,7 @@ class Handler {
   handleFollowEvent(event) {
     this.lineClient.getProfile(event.source.userId).then(profile => {
       this.firebaseClient.addUser(profile);
-      const greetingMessage = `Hello ${
-        profile.displayName
-      }! My name is YTS Bot. Chat bot to help you search and stream HD movies directly on your chat app.
-Try typing "search <your movie title>" to getting started.
-
-Happy watching!`;
+      const greetingMessage = `Hello ${profile.displayName}! My name is YTS Bot. Chat bot to help you search and stream HD movies directly on your chat app.\nTry typing "search<space>your movie title" to getting started, or "series<space>tv series title" for streaming TV Series.\n\nHappy watching!`;
       this.lineClient.replyMessage(
         event.replyToken,
         messages.textMessage(greetingMessage)
@@ -267,7 +262,7 @@ Happy watching!`;
             let osParams = {
               episode: params.episode,
               season: params.season,
-              filename: params.filename
+              filename: params.filename,
             };
             if (params.custom) {
               osParams = Object.assign(osParams, {
@@ -396,7 +391,7 @@ Happy watching!`;
             image: series.poster_id
               ? this.serialClient.getImageUrl(series.poster.name)
               : DEFAULT_IMAGE,
-              qty: parsedData.qty
+            qty: parsedData.qty,
           };
           this.processTorrent(replyToken, source, movieData);
         });
@@ -455,7 +450,7 @@ Happy watching!`;
               size: quality[qty].size,
               season: currentEpi.season,
               ep: currentEpi.ep,
-              qty
+              qty,
             })
           );
         });
