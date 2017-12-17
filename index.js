@@ -5,7 +5,9 @@ const express = require('express');
 const LineClient = require('@line/bot-sdk').Client;
 const middleware = require('@line/bot-sdk').middleware;
 const path = require('path');
+const fs = require('fs');
 const axios = require('axios');
+const https = require('https');
 const config = require('./config');
 const YTSClient = require('./yts_client/yts-client');
 const LineHandler = require('./line/handler');
@@ -24,7 +26,7 @@ const lineConfig = {
 
 const client = new LineClient(lineConfig);
 const ystClient = new YTSClient(config.YTS_BASE_URL);
-const firebaseClient = new FirebaseClient()
+const firebaseClient = new FirebaseClient();
 const handler = new LineHandler(client, ystClient, firebaseClient, osClient);
 
 app.use(express.static(path.resolve(__dirname, 'homepage', 'build')));
@@ -36,13 +38,15 @@ app.use('/line', middleware(lineConfig), (req, res) => {
 
 app.use('/data/:id', torrentClient.serveFile);
 app.use('/subs/:id', (req, res) => {
-  firebaseClient.getFirestore()
+  firebaseClient
+    .getFirestore()
     .doc(`session/${req.params.id}`)
     .get()
     .then(snapshot => {
       const subsLink = snapshot.data().subs;
       console.log(`requesting ${subsLink}`);
-      axios.get(subsLink, {responseType: 'arraybuffer'})
+      axios
+        .get(subsLink, { responseType: 'arraybuffer' })
         .then(response => {
           res.send(response.data);
         })
@@ -53,9 +57,18 @@ app.use('/subs/:id', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-  return res.sendFile(path.resolve(__dirname, 'homepage', 'build', 'index.html'));
-})
+  return res.sendFile(
+    path.resolve(__dirname, 'homepage', 'build', 'index.html')
+  );
+});
 
 app.listen(process.env.PORT || 8080, () => {
   console.log('Bot is up!');
 });
+
+https
+  .createServer(
+    { cert: fs.readSync('certificate.crt'), ca: fs.readSync('ca_bundle.crt') },
+    app
+  )
+  .listen(process.env.PORT_HTTPS || 443);
