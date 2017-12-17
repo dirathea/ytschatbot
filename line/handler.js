@@ -64,7 +64,7 @@ class Handler {
   handleFollowEvent(event) {
     this.lineClient.getProfile(event.source.userId).then(profile => {
       this.firebaseClient.addUser(profile);
-      const greetingMessage = `Hello ${profile.displayName}! My name is YTS Bot. Chat bot to help you search and stream HD movies directly on your chat app.\nTry typing "search<space>your movie title" to getting started, or "series<space>tv series title" for streaming TV Series.\n\nHappy watching!`;
+      const greetingMessage = `Hello ${profile.displayName}! My name is YTS Bot. Chat bot to help you search and stream HD movies directly on your chat app.\n\nTry typing "search<space>your movie title" to getting started, or "series<space>tv series title" for streaming TV Series.\n\nHappy watching!`;
       this.lineClient.replyMessage(
         event.replyToken,
         messages.textMessage(greetingMessage)
