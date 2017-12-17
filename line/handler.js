@@ -419,7 +419,7 @@ Happy watching!`;
         const actions = _.slice(Object.keys(quality), 0, 3).map(qty => {
           const parsedMagnet = magnetUri.decode(quality[qty]);
           const trimmedUrlObject = Object.assign(parsedMagnet, {
-            tr: [],
+            announce: [],
           });
           console.log(trimmedUrlObject);
           return messages.actionPostbackTemplate(
