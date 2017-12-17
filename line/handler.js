@@ -383,6 +383,7 @@ Happy watching!`;
   }
 
   sendSeriesDetails(replyToken, series) {
+    console.log(series);
     const seriesDetailMessages = [];
     if (series.poster_id) {
       seriesDetailMessages.push(
@@ -401,7 +402,9 @@ Happy watching!`;
       const allNetwork = series.network.map(network => network.name).join(', ');
       textDetails.push(`Network : ${allNetwork}`);
     }
-    textDetails.push(stripTags(series.description.body));
+    if (series.description) {
+      textDetails.push(stripTags(series.description.body));
+    }
     seriesDetailMessages.push(messages.textMessage(textDetails.join('\n')));
     const latestEpisode = [];
     let episodeIndex = series.ep.length - 1;
