@@ -373,7 +373,7 @@ Happy watching!`;
         });
         break;
       case 'series-detail':
-        this.serialClient(parsedData.id).then(result =>
+        this.serialClient.seriesDetails(parsedData.id).then(result =>
           this.sendSeriesDetails(replyToken, result)
         );
         break;
