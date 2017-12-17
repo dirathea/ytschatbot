@@ -413,11 +413,11 @@ Happy watching!`;
         const quality = {};
         _.orderBy(currentEpi.torrent, ['seed']).forEach(torr => {
           if (!quality[torr.quality.name]) {
-            quality[torr.quality.name] = torr.value;
+            quality[torr.quality.name] = {url : torr.value, size: torr.size};
           }
         });
         const actions = _.slice(Object.keys(quality), 0, 3).map(qty => {
-          const parsedMagnet = magnetUri.decode(quality[qty]);
+          const parsedMagnet = magnetUri.decode(quality[qty].url);
           const trimmedUrlObject = Object.assign(parsedMagnet, {
             announce: [],
             tr: []
@@ -428,6 +428,7 @@ Happy watching!`;
               keyword: 'series-watch-link',
               id: series.id,
               url: magnetUri.encode(trimmedUrlObject),
+              size: quality[qty].size
             })
           );
         });
