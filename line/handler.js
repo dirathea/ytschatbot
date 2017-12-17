@@ -421,6 +421,7 @@ Happy watching!`;
           const trimmedUrlObject = Object.assign(parsedMagnet, {
             tr: [],
           });
+          console.log(trimmedUrlObject);
           return messages.actionPostbackTemplate(
             `Watch in ${qty} format`,
             qs.stringify({
@@ -432,7 +433,7 @@ Happy watching!`;
         const episodeButton = messages.carouselColumnTemplate(
           undefined,
           undefined,
-          currentEpi.title,
+          _.truncate(currentEpi.title, { length: 20, separator: /\W/ }),
           actions
         );
         latestEpisode.push(episodeButton);
