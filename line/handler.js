@@ -416,10 +416,10 @@ Happy watching!`;
             quality[torr.quality.name] = torr.value;
           }
         });
-        const actions = _.slice(Object.keys(quality), 0, 4).map(qty => {
+        const actions = _.slice(Object.keys(quality), 0, 3).map(qty => {
           const parsedMagnet = magnetUri.decode(quality[qty]);
           const trimmedUrlObject = Object.assign(parsedMagnet, {
-            tr: _.slice(parsedMagnet.tr, 0, 3),
+            tr: [],
           });
           return messages.actionPostbackTemplate(
             `Watch in ${qty} format`,
