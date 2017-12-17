@@ -409,7 +409,7 @@ Happy watching!`;
     let episodeIndex = series.ep.length - 1;
     while (latestEpisode.length < 10) {
       const currentEpi = series.ep[episodeIndex];
-      if (currentEpi.torrent.length > 0) {
+      if (currentEpi.torrent && currentEpi.torrent.length > 0) {
         const quality = {};
         _.orderBy(currentEpi.torrent, ['seed']).forEach(torr => {
           if (!quality[torr.quality.name]) {
@@ -439,9 +439,8 @@ Happy watching!`;
       }
       episodeIndex--;
     }
-    const episodeCarrousel = messages.carouselTemplate(latestEpisode);
-    seriesDetailMessages.push(episodeIndex);
-    console.log(seriesDetailMessages);
+    const episodeCarrousel = messages.carouselTemplate(latestEpisode, 'rectangle', 'contain');
+    seriesDetailMessages.push(episodeCarrousel);
     this.lineClient.replyMessage(replyToken, seriesDetailMessages).catch(handleError);
   }
 }
