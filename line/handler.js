@@ -401,6 +401,7 @@ Happy watching!`;
       const allNetwork = series.network.map(network => network.name).join(', ');
       textDetails.push(`Network : ${allNetwork}`);
     }
+    console.log(series.description);
     if (series.description) {
       textDetails.push(stripTags(series.description.body));
     }
@@ -431,11 +432,10 @@ Happy watching!`;
             })
           );
         });
-        const title = `Season : ${currentEpi.season}\nEpisode: ${currentEpi.ep}\n${currentEpi.title}`;
         const episodeButton = messages.carouselColumnTemplate(
           undefined,
-          undefined,
-          title,
+          `S${currentEpi.season}·E${currentEpi.ep}`,
+          currentEpi.title,
           actions
         );
         latestEpisode.push(episodeButton);
