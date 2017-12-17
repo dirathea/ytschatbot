@@ -441,7 +441,7 @@ Happy watching!`;
     }
     const episodeCarrousel = messages.carouselTemplate(latestEpisode);
     seriesDetailMessages.push(episodeIndex);
-
+    console.log(seriesDetailMessages);
     this.lineClient.replyMessage(replyToken, seriesDetailMessages).catch(handleError);
   }
 }
