@@ -195,7 +195,7 @@ Happy watching!`;
     ).map(serial => {
       const actionDetails = messages.actionPostbackTemplate(
         'Details',
-        qs.stringify({ keyword: 'series-detail', id: result.id })
+        qs.stringify({ keyword: 'series-detail', id: serial.id })
       );
       const actionSubscribe = messages.actionPostbackTemplate(
         'Subscribe',
