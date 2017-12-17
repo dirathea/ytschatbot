@@ -383,6 +383,7 @@ Happy watching!`;
   }
 
   sendSeriesDetails(replyToken, series) {
+    console.log(series);
     const seriesDetailMessages = [];
     if (series.poster_id) {
       seriesDetailMessages.push(
