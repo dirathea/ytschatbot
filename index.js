@@ -26,13 +26,13 @@ const lineConfig = {
 };
 
 const lineClient = new LineClient(lineConfig);
-const ystClient = new YTSClient(config.YTS_BASE_URL);
+const ytsClient = new YTSClient(config.YTS_BASE_URL);
 const firebaseClient = new FirebaseClient();
 const serialClient = new SeriesClient(config.SERIES_BASE_URL);
 const handler = new LineHandler(
   {
     lineClient,
-    ystClient,
+    ytsClient,
     firebaseClient,
     osClient,
     serialClient
