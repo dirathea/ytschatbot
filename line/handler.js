@@ -191,7 +191,7 @@ Happy watching!`
       
       const mainText = `${serial.start} - ${serial.end}\n${schedule}`;
 
-      const mainImage = (serial.poster_id) ? this.serialClient.getImageUrl(serial.poster.name) : 'https://yts.am/assets/images/website/logo-YTS.svg';
+      const mainImage = (serial.poster_id) ? this.serialClient.getImageUrl(serial.poster.name) : 'https://picsum.photos/1024/?blur';
 
       const backgroundPalettePromise = Vibrant.from(mainImage)
         .getPalette()
