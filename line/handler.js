@@ -420,10 +420,11 @@ Happy watching!`;
           const parsedMagnet = magnetUri.decode(quality[qty]);
           const trimmedUrlObject = Object.assign(parsedMagnet, {
             announce: [],
+            tr: []
           });
           console.log(trimmedUrlObject);
           return messages.actionPostbackTemplate(
-            `Watch in ${qty} format`,
+            `Watch in ${qty}`,
             qs.stringify({
               keyword: 'series-watch-link',
               url: magnetUri.encode(trimmedUrlObject),
@@ -433,7 +434,7 @@ Happy watching!`;
         const episodeButton = messages.carouselColumnTemplate(
           undefined,
           undefined,
-          _.truncate(currentEpi.title, { length: 20, separator: /\W/ }),
+          _.truncate(currentEpi.title, { length: 18, separator: /\W/ }),
           actions
         );
         latestEpisode.push(episodeButton);
