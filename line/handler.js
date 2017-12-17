@@ -402,7 +402,7 @@ Happy watching!`;
       textDetails.push(`Network : ${allNetwork}`);
     }
     if (series.description.length > 0) {
-      textDetails.push(stripTags(series.description[0].body));
+      textDetails.push('',stripTags(series.description[0].body));
     }
     seriesDetailMessages.push(messages.textMessage(textDetails.join('\n')));
     const latestEpisode = [];
@@ -426,6 +426,7 @@ Happy watching!`;
             `Watch in ${qty}`,
             qs.stringify({
               keyword: 'series-watch-link',
+              id: series.id,
               url: magnetUri.encode(trimmedUrlObject),
             })
           );
