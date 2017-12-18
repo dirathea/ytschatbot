@@ -41,8 +41,8 @@ class FirebaseClient {
     }
 
     subscribeToSerial(userId, serialId) {
-        firestore.doc(`subscribe/${serialId}/${userId}`)
-            .set(true)
+        firestore.doc(`subscribe/${serialId}`)
+            .update({[userId]: true})
             .then(result => {
                 console.log(`User ${userId} register as ${serialId} subscriber`);
             });
