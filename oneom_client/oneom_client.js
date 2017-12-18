@@ -1,8 +1,17 @@
 const axios = require('axios');
+const axiosExtensions = require('axios-extensions');
 
 class oneomClient {
     constructor(baseUrl) {
         this.baseUrl = baseUrl;
+        this.api = axios.create({
+            baseURL: baseUrl,
+            headers: {
+                'Accept': 'application/json',
+                'Cache-Control': 'no-cache'
+            },
+            adapter: axiosExtensions.cacheAdapterEnhancer(axios.default.adapter, true)
+        });
     }
 
     searchSeries(title) {
@@ -19,9 +28,7 @@ class oneomClient {
 
     _get(url) {
         console.log(`series request ${url}`);
-        return axios.get(`${this.baseUrl}${url}`, {headers: {
-            'Accept': 'application/json'
-        }})
+        return this.api.get(url)
             .then(response => response.data)
             .catch(err => console.log(err));
     }
