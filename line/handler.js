@@ -527,7 +527,12 @@ class Handler {
         );
       }
     });
-    return _.chunk(episodeButtons, 10);
+    const minimumAction = _.minBy(episodeButtons, epi => epi.actions.length);
+    console.log(`min actions ${minimumAction}`);
+    const trimmedEpisodeAction = episodeButtons.map(eb => {
+      return Object.assign(eb, {actions: _.slice(eb.actions, 0, minimumAction)});
+    });
+    return _.chunk(trimmedEpisodeAction, 10);
   }
 }
 
