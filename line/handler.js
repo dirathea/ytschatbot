@@ -64,7 +64,9 @@ class Handler {
   handleFollowEvent(event) {
     this.lineClient.getProfile(event.source.userId).then(profile => {
       this.firebaseClient.addUser(profile);
-      const greetingMessage = `Hello ${profile.displayName}! My name is YTS Bot. Chat bot to help you search and stream HD movies directly on your chat app.\n\nTry typing "search<space>your movie title" to getting started, or "series<space>tv series title" for streaming TV Series.\n\nHappy watching!`;
+      const greetingMessage = `Hello ${
+        profile.displayName
+      }! My name is YTS Bot. Chat bot to help you search and stream HD movies directly on your chat app.\n\nTry typing "search<space>your movie title" to getting started, or "series<space>tv series title" for streaming TV Series.\n\nHappy watching!`;
       this.lineClient.replyMessage(
         event.replyToken,
         messages.textMessage(greetingMessage)
@@ -424,10 +426,50 @@ class Handler {
       textDetails.push('', stripTags(series.description[0].body));
     }
     seriesDetailMessages.push(messages.textMessage(textDetails.join('\n')));
-    const latestEpisode = [];
-    let episodeIndex = series.ep.length - 1;
-    while (latestEpisode.length < 10) {
-      const currentEpi = series.ep[episodeIndex];
+    const seasonsButton = this.getSeriesSeasons(series.id, series.ep);
+    seasonsButton.forEach(season => {
+      const episodeCarrousel = messages.templateMessage(
+        `Search result`,
+        messages.carouselTemplate(season, 'rectangle', 'contain')
+      );
+      seriesDetailMessages.push(episodeCarrousel);
+    });
+    _.chunk(seriesDetailMessages, 5).forEach(maxMessage => {
+      this.lineClient
+      .replyMessage(replyToken, maxMessage)
+      .catch(handleError);
+    });
+  }
+
+  getSeriesSeasons(serialId, epList) {
+    const seasons = {};
+    epList.forEach(ep => {
+      if (!season[ep.season] || season[ep.season] < _.toInteger(ep.ep)) {
+        season[ep.season] = _.toInteger(ep.ep);
+      }
+    });
+    const seasonsButton = Object.keys(seasons).map(seasonNumber => {
+      const totalEpisode = seasons[seasonNumber];
+      const watchEpisode = messages.actionPostbackTemplate(
+        'Watch Episode',
+        qs.stringify({
+          keyword: 'series-season-detail',
+          id: serialId,
+          season: seasonNumber,
+        })
+      );
+      return messages.carouselColumnTemplate(
+        undefined,
+        `Season ${season}`,
+        `Total Episode : ${totalEpisode}`,
+        [watchEpisode]
+      );
+    });
+    return _.chunk(seasonsButton, 10);
+  }
+
+  getSeasonsEpisode(seriesId, epList) {
+    const episodeButtons = epList.map(currentEpi => {
       if (currentEpi.torrent && currentEpi.torrent.length > 0) {
         const quality = {};
         _.orderBy(currentEpi.torrent, ['seed']).forEach(torr => {
@@ -445,7 +487,7 @@ class Handler {
             `Watch in ${qty}`,
             qs.stringify({
               keyword: 'series-watch-link',
-              id: series.id,
+              id: seriesId,
               url: magnetUri.encode(trimmedUrlObject),
               size: quality[qty].size,
               season: currentEpi.season,
@@ -454,24 +496,15 @@ class Handler {
             })
           );
         });
-        const episodeButton = messages.carouselColumnTemplate(
+        return messages.carouselColumnTemplate(
           undefined,
           `S${currentEpi.season}·E${currentEpi.ep}`,
           currentEpi.title,
           actions
         );
-        latestEpisode.push(episodeButton);
       }
-      episodeIndex--;
-    }
-    const episodeCarrousel = messages.templateMessage(
-      `Search result`,
-      messages.carouselTemplate(latestEpisode, 'rectangle', 'contain')
-    );
-    seriesDetailMessages.push(episodeCarrousel);
-    this.lineClient
-      .replyMessage(replyToken, seriesDetailMessages)
-      .catch(handleError);
+    });
+    return _.chunk(episodeButtons, 10);
   }
 }
 
