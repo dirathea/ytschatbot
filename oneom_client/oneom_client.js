@@ -10,7 +10,7 @@ class oneomClient {
                 'Accept': 'application/json',
                 'Cache-Control': 'no-cache'
             },
-            adapter: axiosExtensions.cacheAdapterEnhancer(axios.default.adapter, true)
+            adapter: axiosExtensions.cacheAdapterEnhancer(axios.defaults.adapter, true)
         });
     }
 
