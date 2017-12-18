@@ -380,6 +380,11 @@ class Handler {
           .seriesDetails(parsedData.id)
           .then(result => this.sendSeriesDetails(replyToken, result.serial));
         break;
+      case 'series-season-detail':
+        this.serialClient
+          .seriesDetails(parsedData.id)
+          .then(result => this.sendEpisodes(replyToken, parsedData.season, result.serial));
+        break;
       case 'series-watch-link':
         this.serialClient.seriesDetails(parsedData.id).then(result => {
           const series = result.serial;
@@ -428,11 +433,13 @@ class Handler {
     seriesDetailMessages.push(messages.textMessage(textDetails.join('\n')));
     const seasonsButton = this.getSeriesSeasons(series.id, series.ep);
     seasonsButton.forEach(season => {
-      const episodeCarrousel = messages.templateMessage(
+      const seasonCarrousel
+       = messages.templateMessage(
         `Search result`,
         messages.carouselTemplate(season, 'rectangle', 'contain')
       );
-      seriesDetailMessages.push(episodeCarrousel);
+      seriesDetailMessages.push(seasonCarrousel
+      );
     });
     _.chunk(seriesDetailMessages, 5).forEach(maxMessage => {
       this.lineClient
@@ -448,7 +455,7 @@ class Handler {
         seasons[ep.season] = _.toInteger(ep.ep);
       }
     });
-    const seasonsButton = Object.keys(seasons).map(seasonNumber => {
+    const seasonsButton = Object.keys(seasons).sort().map(seasonNumber => {
       const totalEpisode = seasons[seasonNumber];
       const watchEpisode = messages.actionPostbackTemplate(
         'Watch Episode',
@@ -468,6 +475,21 @@ class Handler {
     return _.chunk(seasonsButton, 10);
   }
 
+  sendEpisodes(replyToken, season, series) {
+    const epList = _.filter(series.ep, {season})
+    const episodeButtons = this.getSeasonsEpisode(series.id, epList);
+    const messages = episodeButtons.map(episodes => {
+      return messages.templateMessage(
+        `Search result`,
+        messages.carouselTemplate(episodes, 'rectangle', 'contain')
+      );
+    });
+    _.chunk(messages, 5).forEach(maxMessage => {
+      this.lineClient
+      .replyMessage(replyToken, maxMessage)
+      .catch(handleError);
+    })
+  }
   getSeasonsEpisode(seriesId, epList) {
     const episodeButtons = epList.map(currentEpi => {
       if (currentEpi.torrent && currentEpi.torrent.length > 0) {
