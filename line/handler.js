@@ -444,8 +444,8 @@ class Handler {
   getSeriesSeasons(serialId, epList) {
     const seasons = {};
     epList.forEach(ep => {
-      if (!season[ep.season] || season[ep.season] < _.toInteger(ep.ep)) {
-        season[ep.season] = _.toInteger(ep.ep);
+      if (!seasons[ep.season] || seasons[ep.season] < _.toInteger(ep.ep)) {
+        seasons[ep.season] = _.toInteger(ep.ep);
       }
     });
     const seasonsButton = Object.keys(seasons).map(seasonNumber => {
