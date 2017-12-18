@@ -41,8 +41,18 @@ class FirebaseClient {
     }
 
     subscribeToSerial(userId, serialId) {
-        firestore.doc(`subscribe/${serialId}`)
-            .update({[userId]: true})
+        const serialSubscriptionPath = `subscribe/${serialId}`;
+        firestore.doc(serialSubscriptionPath)
+            .get()
+            .then(snapshot => {
+                if (snapshot.exists) {
+                    return firestore.doc(serialSubscriptionPath)
+                        .set({[userId]: true})
+                } else {
+                    return firestore.doc(serialSubscriptionPath)
+                        .update({[userId]: true})
+                }
+            })
             .then(result => {
                 console.log(`User ${userId} register as ${serialId} subscriber`);
             });
