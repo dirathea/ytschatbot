@@ -40,6 +40,14 @@ class FirebaseClient {
             });
     }
 
+    subscribeToSerial(userId, serialId) {
+        firestore.doc(`subscribe/${serialId}/${userId}`)
+            .set(true)
+            .then(result => {
+                console.log(`User ${userId} register as ${serialId} subscriber`);
+            });
+    }
+
     getFirestore() {
         return firestore;
     }

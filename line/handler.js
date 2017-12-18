@@ -403,7 +403,16 @@ class Handler {
           this.processTorrent(replyToken, source, movieData);
         });
         break;
-      default:
+      case 'series-subscribe':
+        this.firebaseClient.subscribeToSerial(source.userId, parsedData.id);
+        this.serialClient.seriesDetails(parsedData.id)
+          .then(result => {
+            const series = result.serial;
+            const subscribeMessage = `Successfully subscribe ${series.title}\nYou'll be notified once the new episode is available`;
+            this.lineClient.replyMessage(replyToken, messages.textMessage(subscribeMessage));
+          });
+        break;
+        default:
         break;
     }
   }
