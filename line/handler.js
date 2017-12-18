@@ -527,7 +527,7 @@ class Handler {
         );
       }
     });
-    const minimumAction = _.minBy(episodeButtons, epi => epi.actions.length);
+    const minimumAction = _.minBy(episodeButtons, epi => epi.actions.length).actions.length;
     console.log(`min actions ${minimumAction}`);
     const trimmedEpisodeAction = episodeButtons.map(eb => {
       return Object.assign(eb, {actions: _.slice(eb.actions, 0, minimumAction)});
