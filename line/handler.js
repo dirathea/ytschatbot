@@ -478,18 +478,19 @@ class Handler {
   sendEpisodes(replyToken, season, series) {
     const epList = _.filter(series.ep, {season})
     const episodeButtons = this.getSeasonsEpisode(series.id, epList);
-    const messages = episodeButtons.map(episodes => {
+    const episodeCarrousel = episodeButtons.map(episodes => {
       return messages.templateMessage(
         `Search result`,
         messages.carouselTemplate(episodes, 'rectangle', 'contain')
       );
     });
-    _.chunk(messages, 5).forEach(maxMessage => {
+    _.chunk(episodeCarrousel, 5).forEach(maxMessage => {
       this.lineClient
       .replyMessage(replyToken, maxMessage)
       .catch(handleError);
     })
   }
+
   getSeasonsEpisode(seriesId, epList) {
     const episodeButtons = epList.map(currentEpi => {
       if (currentEpi.torrent && currentEpi.torrent.length > 0) {
