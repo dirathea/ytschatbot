@@ -460,7 +460,7 @@ class Handler {
       );
       return messages.carouselColumnTemplate(
         undefined,
-        `Season ${season}`,
+        `Season ${seasonNumber}`,
         `Total Episode : ${totalEpisode}`,
         [watchEpisode]
       );
