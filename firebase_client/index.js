@@ -45,7 +45,7 @@ class FirebaseClient {
         firestore.doc(serialSubscriptionPath)
             .get()
             .then(snapshot => {
-                if (snapshot.exists) {
+                if (!snapshot.exists) {
                     return firestore.doc(serialSubscriptionPath)
                         .set({[userId]: true})
                 } else {
