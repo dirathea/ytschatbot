@@ -54,7 +54,7 @@ class Handler {
               .doc(`/subscribe/${serialId}`)
               .get()
               .then(snapshot => {
-                if (!snapshot.exists) {
+                if (snapshot.exists) {
                   const subscribers = Object.keys(snapshot.data());
                   _.chunk(subscribers, 150)
                     .forEach(userGroup => {
