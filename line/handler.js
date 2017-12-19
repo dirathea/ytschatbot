@@ -37,7 +37,7 @@ class Handler {
   }
 
   constructCronJob() {
-    const job = new CronJob('* */10 * * * *', () => {
+    const job = new CronJob('* */5 * * * *', () => {
       this.serialClient.seriesToday().then(result => {
         const eps = result.eps;
         const epButton = eps.reduce((prev, ep) => {
@@ -51,7 +51,7 @@ class Handler {
         Object.keys(epButton)
           .forEach(serialId => {
             this.firebaseClient.getFirestore()
-              .doc(`/subscribe/${ep.serial_id}`)
+              .doc(`/subscribe/${serialId}`)
               .get()
               .then(snapshot => {
                 if (!snapshot.exists) {
@@ -59,7 +59,7 @@ class Handler {
                   _.chunk(subscribers, 150)
                     .forEach(userGroup => {
                       this.lineClient
-                        .multicast(userGroup, epButton[ep.serial_id])
+                        .multicast(userGroup, epButton[serialId])
                         .catch(handleError);
                     });
                 }
