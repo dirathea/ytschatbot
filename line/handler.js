@@ -37,7 +37,7 @@ class Handler {
 
   startCronJob() {
     const job = new CronJob(
-      '00 */1 * * * *',
+      '00 00 00 * * *',
       () => {
         this.serialClient.seriesToday().then(result => {
           const eps = result.eps;
@@ -48,7 +48,6 @@ class Handler {
                 ep.serial.poster.name
               ),
             });
-            console.log(buttonWithImage);
             const updatedMessage = messages.textMessage(
               `${ep.serial.title} new episodes Season ${ep.season} Episode ${
                 ep.ep
