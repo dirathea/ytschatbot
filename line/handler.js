@@ -51,10 +51,8 @@ class Handler {
           )];
           return prev;
         }, {});
-        console.log(epButton);
         Object.keys(epButton)
           .forEach(serialId => {
-            console.log(serialId);
             (id => {
               this.firebaseClient.getFirestore()
               .doc(`/subscribe/${id}`)
@@ -66,7 +64,7 @@ class Handler {
                   _.chunk(subscribers, 150)
                     .forEach(userGroup => {
                       this.lineClient
-                        .multicast(userGroup, [updatedMessage, epButton[id]])
+                        .multicast(userGroup, epButton[id])
                         .catch(handleError);
                     });
                 }
