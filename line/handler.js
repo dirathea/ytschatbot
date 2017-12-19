@@ -36,7 +36,7 @@ class Handler {
   }
 
   startCronJob() {
-    const job = new CronJob('00 */2 * * * *', () => {
+    const job = new CronJob('00 */1 * * * *', () => {
       this.serialClient.seriesToday().then(result => {
         const eps = result.eps;
         const epButton = eps.reduce((prev, ep) => {
@@ -44,10 +44,11 @@ class Handler {
           const buttonWithImage = Object.assign(button, {
             thumbnailImageUrl: this.serialClient.getImageUrl(ep.serial.poster.name)
           });
-          prev[ep.serial_id] = messages.templateMessage(
+          const updatedMessage = messages.textMessage(`${ep.serial.title} new episodes Season ${ep.season} Episode ${ep.ep}`);
+          prev[ep.serial_id] = [updatedMessage, messages.templateMessage(
             'Today Series',
-            messages.carouselTemplate(button)
-          );
+            messages.carouselTemplate(buttonWithImage)
+          )];
           return prev;
         }, {});
         console.log(epButton);
@@ -64,7 +65,6 @@ class Handler {
                   const subscribers = Object.keys(snapshot.data());
                   _.chunk(subscribers, 150)
                     .forEach(userGroup => {
-                      const updatedMessage = messages.textMessage(`${ep.serial.title} new episodes Season ${ep.season} Episode ${ep.ep}`);
                       this.lineClient
                         .multicast(userGroup, [updatedMessage, epButton[id]])
                         .catch(handleError);
