@@ -46,6 +46,7 @@ class Handler {
             'Today Series',
             messages.carouselTemplate(button)
           );
+          return prev;
         }, {});
         Object.keys(epButton)
           .forEach(serialId => {
