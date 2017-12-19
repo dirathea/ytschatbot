@@ -42,12 +42,10 @@ class Handler {
         const epButton = eps.reduce((prev, ep) => {
           const button = this.getSeasonsEpisode(ep.serial_id, [ep]);
           console.log(button);
-          prev[ep.serial_id] = button.map(bt => {
-            messages.templateMessage(
-              'Today Series',
-              messages.carouselTemplate(bt)
-            );
-          });
+          prev[ep.serial_id] = messages.templateMessage(
+            'Today Series',
+            messages.carouselTemplate(button[0])
+          );
           return prev;
         }, {});
         Object.keys(epButton)
