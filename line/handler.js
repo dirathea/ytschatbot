@@ -35,7 +35,7 @@ class Handler {
     this.serialClient = clients.serialClient;
   }
 
-  constructCronJob() {
+  startCronJob() {
     const job = new CronJob('* */2 * * * *', () => {
       this.serialClient.seriesToday().then(result => {
         const eps = result.eps;
@@ -55,6 +55,7 @@ class Handler {
               .get()
               .then(snapshot => {
                 if (snapshot.exists) {
+                  console.log(`sending notif for ${serial_id}`);
                   const subscribers = Object.keys(snapshot.data());
                   _.chunk(subscribers, 150)
                     .forEach(userGroup => {
@@ -66,13 +67,11 @@ class Handler {
               })
           })
       });
-    });
+    }, () => {
+      console.log('Send notif completed')
+    },
+    true);
     return job;
-  }
-
-  startCronJob() {
-    this.constructCronJob()
-      .start();
   }
 
   handleRequest(payload) {
