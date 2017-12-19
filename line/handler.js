@@ -36,15 +36,17 @@ class Handler {
   }
 
   startCronJob() {
-    const job = new CronJob('* * 00 * * *', () => {
+    const job = new CronJob('00 */2 * * * *', () => {
       this.serialClient.seriesToday().then(result => {
         const eps = result.eps;
         const epButton = eps.reduce((prev, ep) => {
-          const button = this.getSeasonsEpisode(ep.serial_id, [ep]);
-          console.log(button);
+          const button = this.getSeasonsEpisode(ep.serial_id, [ep])[0];
+          const buttonWithImage = Object.assign(button, {
+            thumbnailImageUrl: this.serialClient.getImageUrl(ep.serial.poster.name)
+          });
           prev[ep.serial_id] = messages.templateMessage(
             'Today Series',
-            messages.carouselTemplate(button[0])
+            messages.carouselTemplate(button)
           );
           return prev;
         }, {});
@@ -62,8 +64,9 @@ class Handler {
                   const subscribers = Object.keys(snapshot.data());
                   _.chunk(subscribers, 150)
                     .forEach(userGroup => {
+                      const updatedMessage = messages.textMessage(`${ep.serial.title} new episodes Season ${ep.season} Episode ${ep.ep}`);
                       this.lineClient
-                        .multicast(userGroup, epButton[id])
+                        .multicast(userGroup, [updatedMessage, epButton[id]])
                         .catch(handleError);
                     });
                 }
