@@ -33,7 +33,6 @@ class Handler {
     this.firebaseClient = clients.firebaseClient;
     this.osClient = clients.osClient;
     this.serialClient = clients.serialClient;
-    this.startCronJob();
   }
 
   constructCronJob() {
@@ -50,6 +49,7 @@ class Handler {
           });
           return prev;
         }, {});
+        console.log(epButton);
         Object.keys(epButton)
           .forEach(serialId => {
             this.firebaseClient.getFirestore()
