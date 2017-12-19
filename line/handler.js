@@ -51,6 +51,7 @@ class Handler {
         console.log(epButton);
         Object.keys(epButton)
           .forEach(serialId => {
+            console.log(serialId);
             (id => {
               this.firebaseClient.getFirestore()
               .doc(`/subscribe/${id}`)
