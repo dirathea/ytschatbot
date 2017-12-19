@@ -48,6 +48,7 @@ class Handler {
                 ep.serial.poster.name
               ),
             });
+            console.log(buttonWithImage);
             const updatedMessage = messages.textMessage(
               `${ep.serial.title} new episodes Season ${ep.season} Episode ${
                 ep.ep
@@ -597,7 +598,6 @@ class Handler {
     });
     const minimumAction = _.minBy(episodeButtons, epi => epi.actions.length)
       .actions.length;
-    console.log(`min actions ${minimumAction}`);
     const trimmedEpisodeAction = episodeButtons.map(eb => {
       return Object.assign(eb, {
         actions: _.slice(eb.actions, 0, minimumAction),
