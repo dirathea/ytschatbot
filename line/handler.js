@@ -37,7 +37,7 @@ class Handler {
 
   startCronJob() {
     const job = new CronJob(
-      '00 00 00 * * *',
+      '00 */1 * * * *',
       () => {
         this.serialClient.seriesToday().then(result => {
           const eps = result.eps;
