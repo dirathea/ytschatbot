@@ -42,7 +42,7 @@ class Handler {
         this.serialClient.seriesToday().then(result => {
           const eps = result.eps;
           const epButton = eps.reduce((prev, ep) => {
-            const button = this.getSeasonsEpisode(ep.serial_id, [ep])[0];
+            const button = this.getSeasonsEpisode(ep.serial_id, [ep])[0][0];
             const buttonWithImage = Object.assign(button, {
               thumbnailImageUrl: this.serialClient.getImageUrl(
                 ep.serial.poster.name
@@ -58,7 +58,7 @@ class Handler {
               updatedMessage,
               messages.templateMessage(
                 'Today Series',
-                messages.carouselTemplate(buttonWithImage)
+                messages.carouselTemplate([buttonWithImage])
               ),
             ];
             return prev;
