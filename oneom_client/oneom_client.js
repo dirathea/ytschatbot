@@ -22,6 +22,10 @@ class oneomClient {
         return this._get(`/serial/${id}`);
     }
 
+    seriesToday() {
+        return this._get(`/ep/date`);
+    }
+
     getImageUrl(imageName){
         return `https://fileom.s3.amazonaws.com/serial/max/${imageName}`;
     }

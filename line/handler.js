@@ -4,6 +4,7 @@ const mustache = require('mustache');
 const Vibrant = require('node-vibrant');
 const stripTags = require('striptags');
 const magnetUri = require('magnet-uri');
+const CronJob = require('cron').CronJob;
 
 const messages = require('./messages');
 
@@ -32,6 +33,45 @@ class Handler {
     this.firebaseClient = clients.firebaseClient;
     this.osClient = clients.osClient;
     this.serialClient = clients.serialClient;
+    this.startCronJob();
+  }
+
+  constructCronJob() {
+    const job = new CronJob('* */10 * * * *', () => {
+      this.serialClient.seriesToday().then(result => {
+        const eps = result.eps;
+        const epButton = eps.reduce((prev, ep) => {
+          const button = this.getSeasonsEpisode(ep.serial_id, [ep]);
+          prev[ep.serial_id] = messages.templateMessage(
+            'Today Series',
+            messages.carouselTemplate(button)
+          );
+        }, {});
+        Object.keys(epButton)
+          .forEach(serialId => {
+            this.firebaseClient.getFirestore()
+              .doc(`/subscribe/${serial_id}`)
+              .get()
+              .then(snapshot => {
+                if (!snapshot.exists) {
+                  const subscribers = Object.keys(snapshot.data());
+                  _.chunk(subscribers, 150)
+                    .forEach(userGroup => {
+                      this.lineClient
+                        .multicast(userGroup, epButton[serial_id])
+                        .catch(handleError);
+                    });
+                }
+              })
+          })
+      });
+    });
+    return job;
+  }
+
+  startCronJob() {
+    this.constructCronJob()
+      .start();
   }
 
   handleRequest(payload) {
@@ -383,7 +423,9 @@ class Handler {
       case 'series-season-detail':
         this.serialClient
           .seriesDetails(parsedData.id)
-          .then(result => this.sendEpisodes(replyToken, parsedData.season, result.serial));
+          .then(result =>
+            this.sendEpisodes(replyToken, parsedData.season, result.serial)
+          );
         break;
       case 'series-watch-link':
         this.serialClient.seriesDetails(parsedData.id).then(result => {
@@ -405,14 +447,18 @@ class Handler {
         break;
       case 'series-subscribe':
         this.firebaseClient.subscribeToSerial(source.userId, parsedData.id);
-        this.serialClient.seriesDetails(parsedData.id)
-          .then(result => {
-            const series = result.serial;
-            const subscribeMessage = `Successfully subscribe ${series.title}\nYou'll be notified once the new episode is available`;
-            this.lineClient.replyMessage(replyToken, messages.textMessage(subscribeMessage));
-          });
+        this.serialClient.seriesDetails(parsedData.id).then(result => {
+          const series = result.serial;
+          const subscribeMessage = `Successfully subscribe ${
+            series.title
+          }\nYou'll be notified once the new episode is available`;
+          this.lineClient.replyMessage(
+            replyToken,
+            messages.textMessage(subscribeMessage)
+          );
+        });
         break;
-        default:
+      default:
         break;
     }
   }
@@ -442,18 +488,14 @@ class Handler {
     seriesDetailMessages.push(messages.textMessage(textDetails.join('\n')));
     const seasonsButton = this.getSeriesSeasons(series.id, series.ep);
     seasonsButton.forEach(season => {
-      const seasonCarrousel
-       = messages.templateMessage(
+      const seasonCarrousel = messages.templateMessage(
         `Search result`,
         messages.carouselTemplate(season, 'rectangle', 'contain')
       );
-      seriesDetailMessages.push(seasonCarrousel
-      );
+      seriesDetailMessages.push(seasonCarrousel);
     });
     _.chunk(seriesDetailMessages, 5).forEach(maxMessage => {
-      this.lineClient
-      .replyMessage(replyToken, maxMessage)
-      .catch(handleError);
+      this.lineClient.replyMessage(replyToken, maxMessage).catch(handleError);
     });
   }
 
@@ -464,28 +506,30 @@ class Handler {
         seasons[ep.season] = _.toInteger(ep.ep);
       }
     });
-    const seasonsButton = Object.keys(seasons).sort().map(seasonNumber => {
-      const totalEpisode = seasons[seasonNumber];
-      const watchEpisode = messages.actionPostbackTemplate(
-        'Watch Episode',
-        qs.stringify({
-          keyword: 'series-season-detail',
-          id: serialId,
-          season: seasonNumber,
-        })
-      );
-      return messages.carouselColumnTemplate(
-        undefined,
-        `Season ${seasonNumber}`,
-        `Total Episode : ${totalEpisode}`,
-        [watchEpisode]
-      );
-    });
+    const seasonsButton = Object.keys(seasons)
+      .sort()
+      .map(seasonNumber => {
+        const totalEpisode = seasons[seasonNumber];
+        const watchEpisode = messages.actionPostbackTemplate(
+          'Watch Episode',
+          qs.stringify({
+            keyword: 'series-season-detail',
+            id: serialId,
+            season: seasonNumber,
+          })
+        );
+        return messages.carouselColumnTemplate(
+          undefined,
+          `Season ${seasonNumber}`,
+          `Total Episode : ${totalEpisode}`,
+          [watchEpisode]
+        );
+      });
     return _.chunk(seasonsButton, 10);
   }
 
   sendEpisodes(replyToken, season, series) {
-    const epList = _.filter(series.ep, {season})
+    const epList = _.filter(series.ep, { season });
     const episodeButtons = this.getSeasonsEpisode(series.id, epList);
     const episodeCarrousel = episodeButtons.map(episodes => {
       return messages.templateMessage(
@@ -494,10 +538,8 @@ class Handler {
       );
     });
     _.chunk(episodeCarrousel, 5).forEach(maxMessage => {
-      this.lineClient
-      .replyMessage(replyToken, maxMessage)
-      .catch(handleError);
-    })
+      this.lineClient.replyMessage(replyToken, maxMessage).catch(handleError);
+    });
   }
 
   getSeasonsEpisode(seriesId, epList) {
@@ -536,10 +578,13 @@ class Handler {
         );
       }
     });
-    const minimumAction = _.minBy(episodeButtons, epi => epi.actions.length).actions.length;
+    const minimumAction = _.minBy(episodeButtons, epi => epi.actions.length)
+      .actions.length;
     console.log(`min actions ${minimumAction}`);
     const trimmedEpisodeAction = episodeButtons.map(eb => {
-      return Object.assign(eb, {actions: _.slice(eb.actions, 0, minimumAction)});
+      return Object.assign(eb, {
+        actions: _.slice(eb.actions, 0, minimumAction),
+      });
     });
     return _.chunk(trimmedEpisodeAction, 10);
   }
