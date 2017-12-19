@@ -51,7 +51,7 @@ class Handler {
         Object.keys(epButton)
           .forEach(serialId => {
             this.firebaseClient.getFirestore()
-              .doc(`/subscribe/${serial_id}`)
+              .doc(`/subscribe/${ep.serial_id}`)
               .get()
               .then(snapshot => {
                 if (!snapshot.exists) {
@@ -59,7 +59,7 @@ class Handler {
                   _.chunk(subscribers, 150)
                     .forEach(userGroup => {
                       this.lineClient
-                        .multicast(userGroup, epButton[serial_id])
+                        .multicast(userGroup, epButton[ep.serial_id])
                         .catch(handleError);
                     });
                 }
