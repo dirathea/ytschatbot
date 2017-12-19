@@ -36,46 +36,58 @@ class Handler {
   }
 
   startCronJob() {
-    const job = new CronJob('00 */1 * * * *', () => {
-      this.serialClient.seriesToday().then(result => {
-        const eps = result.eps;
-        const epButton = eps.reduce((prev, ep) => {
-          const button = this.getSeasonsEpisode(ep.serial_id, [ep])[0];
-          const buttonWithImage = Object.assign(button, {
-            thumbnailImageUrl: this.serialClient.getImageUrl(ep.serial.poster.name)
-          });
-          const updatedMessage = messages.textMessage(`${ep.serial.title} new episodes Season ${ep.season} Episode ${ep.ep}`);
-          prev[ep.serial_id] = [updatedMessage, messages.templateMessage(
-            'Today Series',
-            messages.carouselTemplate(buttonWithImage)
-          )];
-          return prev;
-        }, {});
-        Object.keys(epButton)
-          .forEach(serialId => {
+    const job = new CronJob(
+      '00 00 00 * * *',
+      () => {
+        this.serialClient.seriesToday().then(result => {
+          const eps = result.eps;
+          const epButton = eps.reduce((prev, ep) => {
+            const button = this.getSeasonsEpisode(ep.serial_id, [ep])[0];
+            const buttonWithImage = Object.assign(button, {
+              thumbnailImageUrl: this.serialClient.getImageUrl(
+                ep.serial.poster.name
+              ),
+            });
+            const updatedMessage = messages.textMessage(
+              `${ep.serial.title} new episodes Season ${ep.season} Episode ${
+                ep.ep
+              } is now out! Watch now...`
+            );
+            prev[ep.serial_id] = [
+              updatedMessage,
+              messages.templateMessage(
+                'Today Series',
+                messages.carouselTemplate(buttonWithImage)
+              ),
+            ];
+            return prev;
+          }, {});
+          Object.keys(epButton).forEach(serialId => {
             (id => {
-              this.firebaseClient.getFirestore()
-              .doc(`/subscribe/${id}`)
-              .get()
-              .then(snapshot => {
-                if (snapshot.exists) {
-                  console.log(`sending notif for ${id}`);
-                  const subscribers = Object.keys(snapshot.data());
-                  _.chunk(subscribers, 150)
-                    .forEach(userGroup => {
+              this.firebaseClient
+                .getFirestore()
+                .doc(`/subscribe/${id}`)
+                .get()
+                .then(snapshot => {
+                  if (snapshot.exists) {
+                    console.log(`sending notif for ${id}`);
+                    const subscribers = Object.keys(snapshot.data());
+                    _.chunk(subscribers, 150).forEach(userGroup => {
                       this.lineClient
                         .multicast(userGroup, epButton[id])
                         .catch(handleError);
                     });
-                }
-              })
+                  }
+                });
             })(serialId);
-          })
-      });
-    }, () => {
-      console.log('Send notif completed')
-    },
-    true);
+          });
+        });
+      },
+      () => {
+        console.log('Send notif completed');
+      },
+      true
+    );
     return job;
   }
 
