@@ -49,24 +49,26 @@ class Handler {
           return prev;
         }, {});
         console.log(epButton);
-        // Object.keys(epButton)
-        //   .forEach(serialId => {
-        //     this.firebaseClient.getFirestore()
-        //       .doc(`/subscribe/${serialId}`)
-        //       .get()
-        //       .then(snapshot => {
-        //         if (snapshot.exists) {
-        //           console.log(`sending notif for ${serialId}`);
-        //           const subscribers = Object.keys(snapshot.data());
-        //           _.chunk(subscribers, 150)
-        //             .forEach(userGroup => {
-        //               this.lineClient
-        //                 .multicast(userGroup, epButton[serialId])
-        //                 .catch(handleError);
-        //             });
-        //         }
-        //       })
-        //   })
+        Object.keys(epButton)
+          .forEach(serialId => {
+            (id => {
+              this.firebaseClient.getFirestore()
+              .doc(`/subscribe/${id}`)
+              .get()
+              .then(snapshot => {
+                if (snapshot.exists) {
+                  console.log(`sending notif for ${id}`);
+                  const subscribers = Object.keys(snapshot.data());
+                  _.chunk(subscribers, 150)
+                    .forEach(userGroup => {
+                      this.lineClient
+                        .multicast(userGroup, epButton[id])
+                        .catch(handleError);
+                    });
+                }
+              })
+            })(serialId);
+          })
       });
     }, () => {
       console.log('Send notif completed')
