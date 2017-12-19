@@ -36,11 +36,12 @@ class Handler {
   }
 
   constructCronJob() {
-    const job = new CronJob('* */5 * * * *', () => {
+    const job = new CronJob('* */2 * * * *', () => {
       this.serialClient.seriesToday().then(result => {
         const eps = result.eps;
         const epButton = eps.reduce((prev, ep) => {
           const button = this.getSeasonsEpisode(ep.serial_id, [ep]);
+          console.log(button);
           prev[ep.serial_id] = button.map(bt => {
             messages.templateMessage(
               'Today Series',
@@ -49,7 +50,6 @@ class Handler {
           });
           return prev;
         }, {});
-        console.log(epButton);
         Object.keys(epButton)
           .forEach(serialId => {
             this.firebaseClient.getFirestore()
