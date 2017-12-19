@@ -55,7 +55,7 @@ class Handler {
               .get()
               .then(snapshot => {
                 if (snapshot.exists) {
-                  console.log(`sending notif for ${serial_id}`);
+                  console.log(`sending notif for ${serialId}`);
                   const subscribers = Object.keys(snapshot.data());
                   _.chunk(subscribers, 150)
                     .forEach(userGroup => {
