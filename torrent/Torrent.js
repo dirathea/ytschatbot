@@ -42,7 +42,7 @@ class Torrent {
                   const limitDate = new Date();
                   limitDate.setHours(limitDate.getHours() - 3);
                   if (change.type === 'added') {
-                    console.log(`added on ${change.doc.data().date} with limit ${limitDate.getTime()}`)
+                    console.log(`session ${change.doc.id} added on ${change.doc.data().date} with limit ${limitDate.getTime()}`)
                     if (change.doc.data().date > limitDate.getTime()) {
                       this.addNewTorrent(change.doc.id, torrentUrl, change.doc.data().custom);
                     }
