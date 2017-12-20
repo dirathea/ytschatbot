@@ -78,18 +78,23 @@ class Torrent {
         return this.notifySessionReady(sessionId);
       }
       console.log(`adding ${torrentFile}`);
-      webtorrent.add(torrentFile, { announce: defaultTracker},(torrent) => {
-            console.log(`Torrent for ${sessionId} is available`);
-            const date = new Date();
-            listTorrent[torrentFile] = {
-              torrent,
-              date: date.getTime(),
-            };
-            const file = _.orderBy(torrent.files, ['length'], ['desc'])[0];
-            console.log(`name : ${file.name}`);
-            console.log(`size : ${file.length}`);
-            this.notifySessionReady(sessionId, (custom) ? {title: file.name, size: file.length} : false);
-        });
+      try {
+        webtorrent.add(torrentFile, { announce: defaultTracker},(torrent) => {
+          console.log(`Torrent for ${sessionId} is available`);
+          const date = new Date();
+          listTorrent[torrentFile] = {
+            torrent,
+            date: date.getTime(),
+          };
+          const file = _.orderBy(torrent.files, ['length'], ['desc'])[0];
+          console.log(`name : ${file.name}`);
+          console.log(`size : ${file.length}`);
+          this.notifySessionReady(sessionId, (custom) ? {title: file.name, size: file.length} : false);
+      });
+      } catch (e) {
+        console.log(`Failed to add torrent ${torrentFile}`);
+        console.log(e);
+      }
     }
 
     notifySessionReady(sessionId, customUpdate) {
