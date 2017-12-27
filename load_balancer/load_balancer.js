@@ -30,7 +30,7 @@ class LoadBalancer {
     }
 
     getFileUrl(sessionId) {
-        return serverMap(sessionId);
+        return serverMap[sessionId];
     }
 }
 
