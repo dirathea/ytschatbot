@@ -19,9 +19,6 @@ const OSClient = require('./opensubs_client');
 const SeriesClient = require('./oneom_client/oneom_client');
 const LoadBalancer = require('./load_balancer/load_balancer');
 
-const torrentClient = new Torrent();
-const osClient = new OSClient();
-
 const app = express();
 const lineConfig = {
   channelAccessToken: config.LINE_CHANNEL_ACCESS_TOKEN,
@@ -31,8 +28,10 @@ const lineConfig = {
 const lineClient = new LineClient(lineConfig);
 const ytsClient = new YTSClient(config.YTS_BASE_URL);
 const firebaseClient = new FirebaseClient();
-const serialClient = new SeriesClient(config.SERIES_BASE_URL);
 const loadBalancerClient = new LoadBalancer(firebaseClient);
+const torrentClient = new Torrent(loadBalancerClient);
+const osClient = new OSClient();
+const serialClient = new SeriesClient(config.SERIES_BASE_URL);
 const handler = new LineHandler(
   {
     lineClient,

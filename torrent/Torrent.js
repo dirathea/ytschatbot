@@ -40,7 +40,7 @@ function encodeRFC5987 (str) {
 
 class Torrent {
   
-    constructor() {
+    constructor(loadBalancer) {
       if (!config.FEEDER) {
         //  Server is running on monolith manner
         firestore.collection('session')
@@ -53,6 +53,7 @@ class Torrent {
                     console.log(`session ${change.doc.id} added on ${change.doc.data().date} with limit ${limitDate.getTime()}`)
                     if (change.doc.data().date > limitDate.getTime()) {
                       this.addNewTorrent(change.doc.id, torrentUrl, change.doc.data().custom);
+                      loadBalancer.addNewTorrent(change.doc.id, torrentUrl, change.doc.data().custom);
                     }
                   }
                 });
