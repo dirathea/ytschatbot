@@ -61,6 +61,7 @@ app.post('/add', bodyParser.json(),(req, res) => {
 });
 
 const proxyOptions = {
+  target: config.BASE_URL,
   changeOrigin: true,
   router: req => {
     return loadBalancerClient.getFileUrl(req.params.id);
