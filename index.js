@@ -64,7 +64,9 @@ const proxyOptions = {
   target: config.BASE_URL,
   changeOrigin: true,
   router: req => {
-    return loadBalancerClient.getFileUrl(req.params.id);
+    const url = loadBalancerClient.getFileUrl(req.params.id);
+    console.log(`session ${req.params.id} is served from ${url}`);
+    return url;
   }
 }
 

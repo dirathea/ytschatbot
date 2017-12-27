@@ -41,7 +41,7 @@ function encodeRFC5987 (str) {
 class Torrent {
   
     constructor() {
-      if (!config.FEEDER_MODE) {
+      if (!config.FEEDER) {
         //  Server is running on monolith manner
         firestore.collection('session')
             .onSnapshot(snapshot => {
