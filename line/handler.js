@@ -7,6 +7,7 @@ const magnetUri = require('magnet-uri');
 const CronJob = require('cron').CronJob;
 
 const messages = require('./messages');
+const config = require('../config');
 
 const handleError = err => {
   console.error(JSON.stringify(err.originalError.response.data));
@@ -33,6 +34,7 @@ class Handler {
     this.firebaseClient = clients.firebaseClient;
     this.osClient = clients.osClient;
     this.serialClient = clients.serialClient;
+    this.loadBalancerClient = clients.loadBalancerClient;
   }
 
   startCronJob() {
@@ -199,7 +201,6 @@ class Handler {
     });
 
     return Promise.all(carouselMessage).then(carouselColumns => {
-      console.log(JSON.stringify(carouselColumns));
       const message = messages.templateMessage(
         `Search result`,
         messages.carouselTemplate(carouselColumns, 'rectangle', 'contain')
@@ -289,7 +290,6 @@ class Handler {
     });
 
     return Promise.all(seriesList).then(carouselColumns => {
-      console.log(JSON.stringify(carouselColumns));
       const message = messages.templateMessage(
         `Search result`,
         messages.carouselTemplate(carouselColumns, 'rectangle', 'contain')
@@ -311,6 +311,10 @@ class Handler {
       ? 'your torrent'
       : `${params.title} (${params.qty})`;
     this.firebaseClient.addWatchSession(source.userId, params).then(result => {
+      if (config.FEEDER_MODE) {
+        this.loadBalancerClient.addNewTorrent(result.id, params.movie, params.custom);
+      };
+      
       const unsubscribe = this.firebaseClient
         .getFirestore()
         .doc(`/session/${result.id}`)

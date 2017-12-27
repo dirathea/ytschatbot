@@ -8,6 +8,8 @@ const path = require('path');
 const fs = require('fs');
 const axios = require('axios');
 const https = require('https');
+const bodyParser = require('body-parser');
+const proxy = require('http-proxy-middleware');
 const config = require('./config');
 const YTSClient = require('./yts_client/yts-client');
 const LineHandler = require('./line/handler');
@@ -15,6 +17,7 @@ const FirebaseClient = require('./firebase_client');
 const Torrent = require('./torrent/Torrent');
 const OSClient = require('./opensubs_client');
 const SeriesClient = require('./oneom_client/oneom_client');
+const LoadBalancer = require('./load_balancer/load_balancer');
 
 const torrentClient = new Torrent();
 const osClient = new OSClient();
@@ -29,13 +32,15 @@ const lineClient = new LineClient(lineConfig);
 const ytsClient = new YTSClient(config.YTS_BASE_URL);
 const firebaseClient = new FirebaseClient();
 const serialClient = new SeriesClient(config.SERIES_BASE_URL);
+const loadBalancerClient = new LoadBalancer(firebaseClient);
 const handler = new LineHandler(
   {
     lineClient,
     ytsClient,
     firebaseClient,
     osClient,
-    serialClient
+    serialClient,
+    loadBalancerClient
   });
 
 app.use(express.static(path.resolve(__dirname, 'homepage', 'build')));
@@ -45,7 +50,24 @@ app.use('/line', middleware(lineConfig), (req, res) => {
   return res.sendStatus(200);
 });
 
-app.use('/data/:id', torrentClient.serveFile);
+app.post('/add', bodyParser.json(),(req, res) => {
+  const torrentRequest = req.body;
+  torrentClient.addNewTorrent(
+    torrentRequest.sessionId,
+    torrentRequest.torrentFile,
+    torrentRequest.custom
+  );
+  res.sendStatus(200);
+});
+
+const proxyOptions = {
+  changeOrigin: true,
+  router: req => {
+    return loadBalancerClient.getFileUrl(req.params.id);
+  }
+}
+
+app.use('/data/:id', config.FEEDER_MODE ? proxy(proxyOptions) : torrentClient.serveFile);
 app.use('/subs/:id', (req, res) => {
   firebaseClient
     .getFirestore()

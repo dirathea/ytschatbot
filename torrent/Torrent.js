@@ -3,10 +3,16 @@ const pump = require('pump');
 const mime = require('mime');
 const rangeParser = require('range-parser');
 const admin = require("firebase-admin");
+const config = require('../config');
 const firestore = admin.firestore();
 const _ = require('lodash');
 
 const webtorrent = new Webtorrent();
+        
+webtorrent.on('error', err => {
+  console.log(err);
+});
+
 const listTorrent = {}
 const torrentOptions = {}
 const defaultTracker = [
@@ -35,6 +41,8 @@ function encodeRFC5987 (str) {
 class Torrent {
   
     constructor() {
+      if (!config.FEEDER_MODE) {
+        //  Server is running on monolith manner
         firestore.collection('session')
             .onSnapshot(snapshot => {
                 snapshot.docChanges.forEach(change => {
@@ -49,11 +57,7 @@ class Torrent {
                   }
                 });
             });
-        
-        webtorrent.on('error', err => {
-          console.log(err);
-        });
-
+      }
         setInterval(this.expiredTorrent, 3600 * 1000);
     }
 
