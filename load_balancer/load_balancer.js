@@ -7,7 +7,7 @@ class LoadBalancer {
     constructor(firebaseClient) {
         this.firebaseClient = firebaseClient;
         this.firebaseClient.getFirestore()
-            .collection('session')
+            .collection('servers')
             .get()
             .then(snapshot => {
                 snapshot.forEach(doc => {
