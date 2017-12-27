@@ -97,5 +97,7 @@ app.get('*', (req, res) => {
 
 app.listen(process.env.PORT || 8080, () => {
   console.log('Bot is up!');
-  handler.startCronJob();
+  if (!config.FEEDER) {
+    handler.startCronJob();
+  }
 });

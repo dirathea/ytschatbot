@@ -38,6 +38,7 @@ class Handler {
   }
 
   startCronJob() {
+    console.log('Starting cron job for subscription');
     const job = new CronJob(
       '00 00 00 * * *',
       () => {
