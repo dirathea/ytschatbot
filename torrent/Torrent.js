@@ -52,7 +52,7 @@ class Torrent {
                   if (change.type === 'added') {
                     console.log(`session ${change.doc.id} added on ${change.doc.data().date} with limit ${limitDate.getTime()}`)
                     if (change.doc.data().date > limitDate.getTime()) {
-                      this.addNewTorrent(change.doc.id, torrentUrl, change.doc.data().custom);
+                      // this.addNewTorrent(change.doc.id, torrentUrl, change.doc.data().custom);
                       loadBalancer.addNewTorrent(change.doc.id, torrentUrl, change.doc.data().custom);
                     }
                   }
