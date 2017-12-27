@@ -10,5 +10,6 @@ module.exports = {
     BASE_URL: process.env.BASE_URL,
     OS_USER_AGENT: process.env.OS_USER_AGENT || 'TemporaryUserAgent',
     SERIES_BASE_URL: process.env.SERIES_BASE_URL || 'https://oneom.tk/',
-    FEEDER_MODE: process.env.FEEDER_MODE
+    FEEDER_MODE: process.env.FEEDER_MODE,
+    FEEDER: process.env.FEEDER
 }
