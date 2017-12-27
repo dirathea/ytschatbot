@@ -22,7 +22,7 @@ class OpenSubsClient {
             .then(snapshot => {
                 if (snapshot.exists) {
                     return this.firestore.doc(`/session/${id}`)
-                        .update({subs: snapshot.data()});
+                        .update({subs: snapshot.data().subs});
                 }
                 return osClient.search(params)
                 .then(subtitles => {
