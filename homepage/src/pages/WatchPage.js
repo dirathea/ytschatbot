@@ -99,7 +99,6 @@ class WatchPage extends Component {
             onError={this.onVideoError}
             onPlaying={this.onPlayingVideo}
             onPause={this.onPauseVideo}
-            poster={this.state.image}
             controls={[
               'PlayPause',
               'Seek',
