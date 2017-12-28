@@ -553,6 +553,12 @@ class Handler {
   sendEpisodes(replyToken, season, series) {
     const epList = _.filter(series.ep, { season });
     const episodeButtons = this.getSeasonsEpisode(series.id, epList);
+    
+    if (episodeButtons.length === 0) {
+      return this.lineClient.replyMessage(replyToken, `Sorry All Episodes are offline`)
+        .catch(handleError);
+    }
+
     const episodeCarrousel = episodeButtons.map(episodes => {
       return messages.templateMessage(
         `Search result`,
@@ -601,9 +607,13 @@ class Handler {
       }
       return undefined;
     });
-    const minimumAction = _.minBy(_.compact(episodeButtons), epi => epi.actions.length)
+    const compactEpisode = _.compact(episodeButtons);
+    if (compactEpisode.length === 0) {
+      return []
+    };
+    const minimumAction = _.minBy(compactEpisode, epi => epi.actions.length)
       .actions.length;
-    const trimmedEpisodeAction = _.compact(episodeButtons).map(eb => {
+    const trimmedEpisodeAction = compactEpisode.map(eb => {
       return Object.assign(eb, {
         actions: _.slice(eb.actions, 0, minimumAction),
       });
