@@ -555,7 +555,7 @@ class Handler {
     const episodeButtons = this.getSeasonsEpisode(series.id, epList);
 
     if (episodeButtons.length === 0) {
-      return this.lineClient.replyMessage(replyToken, messages.textMessage(`Sorry All Episodes are offline`))
+      return this.lineClient.replyMessage(replyToken, messages.textMessage(`Sorry All Episodes on Season ${season} are offline`))
         .catch(handleError);
     }
 
