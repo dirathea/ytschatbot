@@ -40,9 +40,12 @@ class WatchPage extends Component {
   }
 
   onVideoError = event => {
-    this.setState({
-      error: true
-    });
+    const errorCode = event.target.error.code;
+    if (errorCode === 2 || errorCode === 4) {
+      this.setState({
+        error: true
+      });
+    }
   }
 
   errorRedirect = event => {
