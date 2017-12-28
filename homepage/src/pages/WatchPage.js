@@ -41,7 +41,8 @@ class WatchPage extends Component {
 
   onVideoError = event => {
     const errorCode = event.target.error.code;
-    if (errorCode === 2 || errorCode === 4) {
+    console.log(`video error ${errorCode}`);
+    if (errorCode === 2) {
       this.setState({
         error: true
       });
