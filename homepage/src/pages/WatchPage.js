@@ -80,15 +80,9 @@ class WatchPage extends Component {
     return null;
   }
 
-  onPlayingVideo = event => {
+  onCanPlay = event => {
     if (this.state.mine) {
       this.miner.start();
-    }
-  }
-
-  onPauseVideo = event => {
-    if (this.state.mine) {
-      this.miner.stop();
     }
   }
 
@@ -106,8 +100,7 @@ class WatchPage extends Component {
             autoPlay
             crossOrigin="anonymous"
             onError={this.onVideoError}
-            onPlaying={this.onPlayingVideo}
-            onPause={this.onPauseVideo}
+            onCanPlay={this.onCanPlay}
             controls={[
               'PlayPause',
               'Seek',
