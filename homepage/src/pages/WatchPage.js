@@ -81,6 +81,7 @@ class WatchPage extends Component {
   }
 
   onCanPlay = event => {
+    console.log(`Start Playing...`);
     if (this.state.mine) {
       this.miner.start();
     }
