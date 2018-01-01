@@ -246,6 +246,10 @@ class Handler {
   }
 
   sendSeriesList(replyToken, result) {
+    if (result.count === 0) {
+      return this.lineClient.replyMessage(replyToken, messages.textMessage('Series not found'));
+    }
+    
     const seriesList = _.slice(
       _.orderBy(result.serials, ['imdb_rating'], ['desc']),
       0,
