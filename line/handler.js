@@ -35,6 +35,7 @@ class Handler {
     this.osClient = clients.osClient;
     this.serialClient = clients.serialClient;
     this.loadBalancerClient = clients.loadBalancerClient;
+    this.coinClient = clients.coinClient;
   }
 
   startCronJob() {
@@ -247,9 +248,12 @@ class Handler {
 
   sendSeriesList(replyToken, result) {
     if (result.count === 0) {
-      return this.lineClient.replyMessage(replyToken, messages.textMessage('Series not found'));
+      return this.lineClient.replyMessage(
+        replyToken,
+        messages.textMessage('Series not found')
+      );
     }
-    
+
     const seriesList = _.slice(
       _.orderBy(result.serials, ['imdb_rating'], ['desc']),
       0,
@@ -317,9 +321,13 @@ class Handler {
       : `${params.title} (${params.qty})`;
     this.firebaseClient.addWatchSession(source.userId, params).then(result => {
       if (config.FEEDER_MODE) {
-        this.loadBalancerClient.addNewTorrent(result.id, params.movie, params.custom);
-      };
-      
+        this.loadBalancerClient.addNewTorrent(
+          result.id,
+          params.movie,
+          params.custom
+        );
+      }
+
       const unsubscribe = this.firebaseClient
         .getFirestore()
         .doc(`/session/${result.id}`)
@@ -342,13 +350,17 @@ class Handler {
                 filesize: params.size,
               });
             }
-            this.osClient.getSubsLink(result.id, osParams).then(() => {
-              this.lineClient.pushMessage(
-                sessionData.userId,
-                messages.textMessage(
-                  `Watch ${contentString} here\n${result.url}`
-                )
-              );
+            return this.osClient.getSubsLink(result.id, osParams).then(() => {
+              return this.coinClient
+                .generateShortLink(result.url)
+                .then(shortUrl => {
+                  return this.lineClient.pushMessage(
+                    sessionData.userId,
+                    messages.textMessage(
+                      `Watch ${contentString} here\n${shortUrl}`
+                    )
+                  );
+                });
             });
           }
         });
@@ -559,7 +571,13 @@ class Handler {
     const episodeButtons = this.getSeasonsEpisode(series.id, epList);
 
     if (episodeButtons.length === 0) {
-      return this.lineClient.replyMessage(replyToken, messages.textMessage(`Sorry ${series.title} Season ${season} are offline`))
+      return this.lineClient
+        .replyMessage(
+          replyToken,
+          messages.textMessage(
+            `Sorry ${series.title} Season ${season} are offline`
+          )
+        )
         .catch(handleError);
     }
 
@@ -613,8 +631,8 @@ class Handler {
     });
     const compactEpisode = _.compact(episodeButtons);
     if (compactEpisode.length === 0) {
-      return []
-    };
+      return [];
+    }
     const minimumAction = _.minBy(compactEpisode, epi => epi.actions.length)
       .actions.length;
     const trimmedEpisodeAction = compactEpisode.map(eb => {

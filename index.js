@@ -18,6 +18,7 @@ const Torrent = require('./torrent/Torrent');
 const OSClient = require('./opensubs_client');
 const SeriesClient = require('./oneom_client/oneom_client');
 const LoadBalancer = require('./load_balancer/load_balancer');
+const CoinClient = require('./coin_client/coinClient');
 
 const app = express();
 const lineConfig = {
@@ -32,6 +33,7 @@ const loadBalancerClient = new LoadBalancer(firebaseClient);
 const torrentClient = new Torrent(loadBalancerClient);
 const osClient = new OSClient();
 const serialClient = new SeriesClient(config.SERIES_BASE_URL);
+const coinClient = new CoinClient(config.COIN_BASE_URL, config.COIN_SECRET);
 const handler = new LineHandler(
   {
     lineClient,
@@ -39,7 +41,8 @@ const handler = new LineHandler(
     firebaseClient,
     osClient,
     serialClient,
-    loadBalancerClient
+    loadBalancerClient,
+    coinClient
   });
 
 app.use(express.static(path.resolve(__dirname, 'homepage', 'build')));

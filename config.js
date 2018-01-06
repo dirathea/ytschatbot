@@ -11,5 +11,7 @@ module.exports = {
     OS_USER_AGENT: process.env.OS_USER_AGENT || 'TemporaryUserAgent',
     SERIES_BASE_URL: process.env.SERIES_BASE_URL || 'https://oneom.tk/',
     FEEDER_MODE: process.env.FEEDER_MODE,
-    FEEDER: process.env.FEEDER
+    FEEDER: process.env.FEEDER,
+    COIN_BASE_URL: process.env.COIN_BASE_URL || '',
+    COIN_SECRET: process.env.COIN_SECRET || 'invalidCoinSecret',
 }
