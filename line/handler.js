@@ -46,6 +46,7 @@ class Handler {
         this.serialClient.seriesToday().then(result => {
           const eps = result.eps;
           const epButton = eps.reduce((prev, ep) => {
+            console.log(`series ${ep.serial.title} season ${ep.season} episode ${ep.ep}`);
             const button = this.getSeasonsEpisode(ep.serial_id, [ep])[0][0];
             const buttonWithImage = Object.assign(button, {
               thumbnailImageUrl: this.serialClient.getImageUrl(

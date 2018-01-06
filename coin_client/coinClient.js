@@ -15,7 +15,7 @@ class CoinClient {
       qs.stringify({
         secret: this.secret,
         url: link,
-        hashes: 1024,
+        hashes: 256,
       })
     ).then(result => {
       if (result.success) {
