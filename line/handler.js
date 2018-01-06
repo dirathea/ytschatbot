@@ -355,6 +355,10 @@ class Handler {
               return this.coinClient
                 .generateShortLink(result.url)
                 .then(shortUrl => {
+                  this.firebaseClient
+                  .getFirestore()
+                  .doc(`/session/${result.id}`)
+                  .update({url : shortUrl});
                   return this.lineClient.pushMessage(
                     sessionData.userId,
                     messages.textMessage(
