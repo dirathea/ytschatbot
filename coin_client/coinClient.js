@@ -25,7 +25,7 @@ class CoinClient {
     }
 
     _post(path, params) {
-        return this.post(path, params, {
+        return this.api.post(path, params, {
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             }
