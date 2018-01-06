@@ -9,6 +9,7 @@ class CoinClient {
   }
 
   generateShortLink(link) {
+    console.log(`secret ${this.secret}`);
     return this._post('link/create', {
       secret: this.secret,
       url: link,
