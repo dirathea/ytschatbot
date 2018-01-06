@@ -89,7 +89,7 @@ class HomePage extends Component {
           <GridListTileBar
             title={movieData.title}
             actionIcon={
-              <a href={movieData.url}>
+              <a href={movieData.url || `/watch/${movieData.id}`}>
                 <IconButton>
                   <PlayCircleOutline />
                 </IconButton>
