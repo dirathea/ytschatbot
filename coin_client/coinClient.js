@@ -1,4 +1,5 @@
 const axios = require('axios');
+const qs = require('query-string');
 
 class CoinClient {
   constructor(baseUrl, secret) {
@@ -9,12 +10,14 @@ class CoinClient {
   }
 
   generateShortLink(link) {
-    console.log(`secret ${this.secret}`);
-    return this._post('link/create', {
-      secret: this.secret,
-      url: link,
-      hashes: 1024,
-    }).then(result => {
+    return this._post(
+      'link/create',
+      qs.stringify({
+        secret: this.secret,
+        url: link,
+        hashes: 1024,
+      })
+    ).then(result => {
       if (result.success) {
         return result.url;
       }
