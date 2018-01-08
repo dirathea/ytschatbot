@@ -1,5 +1,6 @@
 const axios = require('axios');
 const qs = require('query-string');
+const _ = require('lodash');
 
 class CoinClient {
   constructor(baseUrl, secret, hash) {
