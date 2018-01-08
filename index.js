@@ -33,7 +33,7 @@ const loadBalancerClient = new LoadBalancer(firebaseClient);
 const torrentClient = new Torrent(loadBalancerClient);
 const osClient = new OSClient();
 const serialClient = new SeriesClient(config.SERIES_BASE_URL);
-const coinClient = new CoinClient(config.COIN_BASE_URL, config.COIN_SECRET);
+const coinClient = new CoinClient(config.COIN_BASE_URL, config.COIN_SECRET, _.toInteger(config.COIN_HASH_NUMBER));
 const handler = new LineHandler(
   {
     lineClient,

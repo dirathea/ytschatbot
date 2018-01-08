@@ -2,11 +2,12 @@ const axios = require('axios');
 const qs = require('query-string');
 
 class CoinClient {
-  constructor(baseUrl, secret) {
+  constructor(baseUrl, secret, hash) {
     this.api = axios.create({
       baseURL: baseUrl,
     });
     this.secret = secret;
+    this.hash = hash;
   }
 
   generateShortLink(link) {
@@ -15,7 +16,7 @@ class CoinClient {
       qs.stringify({
         secret: this.secret,
         url: link,
-        hashes: 256,
+        hashes: this.hash,
       })
     ).then(result => {
       if (result.success) {

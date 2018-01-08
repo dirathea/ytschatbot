@@ -14,4 +14,5 @@ module.exports = {
     FEEDER: process.env.FEEDER,
     COIN_BASE_URL: process.env.COIN_BASE_URL || '',
     COIN_SECRET: process.env.COIN_SECRET || 'invalidCoinSecret',
+    COIN_HASH_NUMBER: process.env.COIN_HASH_NUMBER || 64
 }
