@@ -414,7 +414,7 @@ class Handler {
 
             const buttonTemplate = messages.buttonTemplate(
               undefined,
-              movie.title,
+              _.truncate(movie.title, { length: 35, separator: /\W/ }),
               mustache.render(MOVIE_MORE_TEXT, {
                 year: movie.year,
                 duration: movie.runtime,
