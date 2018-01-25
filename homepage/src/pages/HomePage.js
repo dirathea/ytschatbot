@@ -19,7 +19,9 @@ const styles = {
 };
 
 class HomePage extends Component {
-  state = {};
+  state = {
+    readyMovie : [],
+  };
   componentDidMount() {
     const firestore = firebase.firestore();
     const expireDate = new Date();
@@ -78,9 +80,6 @@ class HomePage extends Component {
   }
 
   renderReadyMovie() {
-    if (!this.state.readyMovie) {
-      return null;
-    }
     const grid = Object.keys(this.state.readyMovie).map(url => {
       const movieData = this.state.readyMovie[url];
       return (
