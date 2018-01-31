@@ -5,7 +5,8 @@ import * as firebase from 'firebase';
 // Required for side-effects
 import 'firebase/firestore';
 import './App.css';
-import { HomePage, WatchPage } from './pages';
+import HomePage from "./pages/HomePage";
+import WatchPage from "./pages/WatchPage";
 
 firebase.initializeApp({
   apiKey: 'AIzaSyCrpY3NGrNXzLfBUbjBYnfnNPEp5j_Q8Ng',
